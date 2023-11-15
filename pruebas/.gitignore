@@ -1,0 +1,6 @@
+
+#Ignorar carpetas con binarios y assets
+assets/
+obj/
+
+/game
