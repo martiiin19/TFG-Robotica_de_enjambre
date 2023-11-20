@@ -5,7 +5,7 @@
 struct Sprite
 {
     explicit Sprite(){
-        tex = LoadTexture("assets/Characters/Civilian1_Idle.png");
+        tex = LoadTexture("assets/animaciones/Characters/Civilian1_Idle.png");
         source = { 0.0f, 0.0f, (float)tex.width/4, (float)tex.height/2 };
     }
 

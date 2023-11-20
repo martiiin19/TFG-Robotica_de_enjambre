@@ -13,14 +13,14 @@ $(patsubst %.c, %.h,$(patsubst %.cpp, %.hpp,$(1)))
 endef
 
 APP			:= game
-CCFLAGS 	:= -Wall -pedantic #-fsanitize=address
+CCFLAGS 	:= -Wall -pedantic -m64 -std=c++20 -Iz#-fsanitize=address
 CC			:= g++
 MKDIR		:= mkdir -p
 SRC			:= src
 OBJ			:= obj
-LIBS		:= -lX11 -lXext -lxml2 -lz -licuuc
+LIBS		:= -Ilib -lX11 -lXext -lxml2 -lz -licuuc #-Ilib/libtmx/include 
 
-LIBRERIAS	:=  lib/libraylib.a lib/libtmx.a 
+LIBRERIAS	:=  lib/libraylib.a lib/libtmx/libtmx.a lib/libtmx/libxml2.a lib/libtmx/libz.a 
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCS		:= $(shell find src/ -type f -iname *.c)
