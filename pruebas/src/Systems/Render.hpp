@@ -10,7 +10,6 @@
 #include "../Handler/Entity.hpp"
 #include "../Handler/GameEntities.hpp"
 #include "../Player/Player.hpp"
-#include "../Handler/Map.hpp"
 
 #include <iostream>
 
