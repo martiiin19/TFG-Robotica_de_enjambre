@@ -152,17 +152,17 @@ int main(int argc, char **argv) {
 
 	 printf("Lo he detectao\n");
 
-	 if (tmx_load(ruta) == NULL) {
-	     printf("Esto es NULL\n");
-	 }else{
-	 	printf("Lo he detectao\n");
-	 }
+	 //if (tmx_load(ruta) == NULL) {
+	 //    printf("Esto es NULL\n");
+	 //}else{
+	 //	printf("Lo he detectao\n");
+	 //}
 
-	// tmx_map *map = tmx_load("mapaXML.tmx");
-	// if (!map) {
-	// 	tmx_perror("Cannot load map");
-	// 	return 1;
-	// }
+	 tmx_map *map = tmx_load("assets/mapas/mapaXML.tmx");
+	 if (!map) {
+	 	tmx_perror("Cannot load map");
+	 	return 1;
+	 }
 	
 
 	// while (!WindowShouldClose()) {
