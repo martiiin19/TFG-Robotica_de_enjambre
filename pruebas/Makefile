@@ -20,7 +20,7 @@ SRC			:= src
 OBJ			:= obj
 LIBS		:= -Ilib -lX11 -lXext -lxml2 -lz -licuuc 
 
-LIBRERIAS	:=  lib/libraylib.a
+LIBRERIAS	:=  lib/libraylib.a lib/libtmx/libtmx.a lib/libtmx/libz.a 
 
 ALLCPPS		:= $(shell find src/ -type f -iname *.cpp)
 ALLCS		:= $(shell find src/ -type f -iname *.c)
