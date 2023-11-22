@@ -16,6 +16,12 @@ struct Map
         
     }
 
+    
+
+    void printMap(){
+
+    }
+
     private:
         tinyxml2::XMLDocument map;
        
