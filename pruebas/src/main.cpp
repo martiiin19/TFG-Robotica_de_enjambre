@@ -10,7 +10,7 @@
 //Handler
 #include "Handler/GameEntities.hpp"
 #include "Handler/EntityGenerator.hpp"
-#include "Handler/Map/Map.hpp"
+#include "Handler/Map/MapsHandler.hpp"
 
 //Player
 #include "Player/Player.hpp"
@@ -18,6 +18,7 @@
 //Macros
 #define SCREENWIDTH 1920
 #define SCREENHEIGHT 1080
+
 
 int main(){
 
@@ -29,7 +30,9 @@ int main(){
 
     Player player;
 
-    Map map {"assets/Mapas/mapaXML.tmx"};
+    MapsHandler maps {};
+
+    maps.addMap("assets/mapas/mapaXML.tmx");
 
     Render_System render;
     Physics_System physics;
