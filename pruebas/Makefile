@@ -13,7 +13,7 @@ $(patsubst %.c, %.h,$(patsubst %.cpp, %.hpp,$(1)))
 endef
 
 APP			:= game
-CCFLAGS 	:= -Wall -pedantic -m64 -std=c++20 -Iz#-fsanitize=address
+CCFLAGS 	:= -Wall -pedantic -m64 -std=c++20 -Iz #-fsanitize=address
 CC			:= g++
 MKDIR		:= mkdir -p
 SRC			:= src
