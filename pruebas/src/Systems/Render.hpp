@@ -23,7 +23,7 @@ struct Render_System
             DrawRectangleRec(player.rectSelection,WHITE);
         }
         for(auto& ent : game.getAllEntities()){
-            ent.drawEntity();
+            ent->drawEntity();
 
         }
     }
