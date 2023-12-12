@@ -5,6 +5,7 @@
 #include "tinyXML2/tinyxml2.h"
 #include <iostream>
 #include <string>
+#include "../Textura.hpp"
 
 using namespace tinyxml2;
 
@@ -29,7 +30,7 @@ struct Tile {
         return columns;
     }
 
-    explicit Tile(int i,XMLElement& tileset, int firstID) : gid(i) { //lo suyo es pasarle el gid del tile y hacer el calculo para sacar el tile
+    explicit Tile(int i,XMLElement& tileset,Textura* tex, int firstID) : gid{i},textura{tex} { //lo suyo es pasarle el gid del tile y hacer el calculo para sacar el tile
         int id = sacarId(i,firstID);
         tileset.QueryAttribute("tilewidth",&tileWidth);
         tileset.QueryAttribute("tileheight",&tileHeight);
@@ -40,15 +41,26 @@ struct Tile {
 
         tile = {columna*tileWidth ,fila*tileHeight , tileWidth, tileHeight };
 
+        tilesetPath = tileset.Value();
     }
 
-    void printTile(Texture2D tex,Vector2 pos){
-        DrawTextureRec(tex,tile,pos,WHITE);
+    void printTile(Vector2 pos){
+        if(textura != nullptr){
+            DrawTextureRec(textura->getTexture(),tile,pos,WHITE);
+        }
+        
+    }
+
+    int getID(){
+        return gid;
     }
 
     private:
         int gid { 0 };
         float tileWidth;
         float tileHeight;
+        std::string tilesetPath;
         Rectangle tile{};
+        Textura* textura;
+        //al igual hay que poner una referencia a la textura para hacerlo mas facil
 };
