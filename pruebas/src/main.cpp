@@ -54,6 +54,7 @@ int main(){
         physics.Update(gameEntities);
 
         BeginDrawing(); 
+            maps.printMap();
             render.Update(gameEntities, player);
         EndDrawing();
 
