@@ -45,9 +45,11 @@ struct Map
 
     XMLElement* getTilesetXMLElement(int id){
         XMLElement* aux {};
-        for(XMLElement* child = map->FirstChildElement("tileset"); child != nullptr; child = child->NextSiblingElement("tileset")){
+        int centinela = -1;
+        for(XMLElement* child = map->FirstChildElement("tileset"); child != nullptr && centinela == -1; child = child->NextSiblingElement("tileset")){
             if(id < std::stoi(child->Attribute("firstgid"))){
                 aux = child->PreviousSiblingElement("tileset");
+                centinela = 0;
             }
         }
         return aux;
@@ -89,21 +91,24 @@ struct Map
                         centinela = false;
                     }
                 }
-                
-                
+                   
             }
         }
     }
     
-    void printLayers(){
+    void printLayers(Camera2D& cam){
         for(XMLElement* child = map->FirstChildElement("layer"); child != nullptr; child = child->NextSiblingElement("layer")){
             XMLElement* firstTile = child->FirstChildElement("data")->FirstChildElement("tile");
-
-            for(int y=100;y<filas*tileheight;y+=tileheight){
-                for(int x=100;x<columnas*tilewidth;x+=tilewidth){
+            
+            for(int y=0;y<filas;y++){
+                for(int x=0;x<columnas;x++){
                     //std::cout<< "Ancho: " << x << "/" << columnas*tilewidth << " Alto: " << y << "/" << filas*tileheight << std::endl;
                     if(firstTile->Attribute("gid")){
-                        printTile(std::stoi(firstTile->Attribute("gid")),x,y);
+                        int m_X = (x - y) * tilewidth / 2;
+                        int m_Y = (x + y) * tileheight / 2;
+                        Vector2 pos {m_X,m_Y};
+                        
+                        printTile(std::stoi(firstTile->Attribute("gid")),pos);
                          
                     }
                     firstTile = firstTile->NextSiblingElement("tile");
@@ -118,16 +123,16 @@ struct Map
     }
 
 
-    void printMap(){
-       printLayers();
+    void printMap(Camera2D& cam){
+       printLayers(cam);
        putObjetcs();
     }
 
-    void printTile(int gid, float x,float y){
+    void printTile(int gid, Vector2 pos){
         for(auto& t :tiles){
             if(gid == t->getID()){
-                Vector2 pos {x,y};
                 t->printTile(pos);
+                //std::cout<< t->getID() << std::endl;
             }
         }
     }

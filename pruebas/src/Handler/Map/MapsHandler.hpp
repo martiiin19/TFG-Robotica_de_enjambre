@@ -50,9 +50,9 @@ struct MapsHandler{
        
     }
 
-    void printMap(){
+    void printMap(Camera2D& cam){
 
-        maps.at(id)->printMap(); // esto hay que cambiarlo por un vector personalizado a la mapa con sus tilesets
+        maps.at(id)->printMap(cam); // esto hay que cambiarlo por un vector personalizado a la mapa con sus tilesets
     }
 
 
