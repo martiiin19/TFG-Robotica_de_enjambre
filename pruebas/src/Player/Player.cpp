@@ -39,15 +39,15 @@ int Player::anyEntitySelected() noexcept{
     return aux;
 }
 
-void Player::moveEntity() noexcept{
+void Player::moveEntity(Vector2 coords) noexcept{
     if(arraySeleccion[0] != nullptr){
-        Vector2 aux = {mouse.getCoord().x - W_SOLDIER/2,mouse.getCoord().y -H_SOLDIER/2};
+        Vector2 aux = {coords.x - W_SOLDIER/2,coords.y -H_SOLDIER/2};
         arraySeleccion[0]->setDestination(aux);
     }
 }
 
-void Player::moveAndFormation() noexcept{
-    ESTANDAR(mouse.getCoord());
+void Player::moveAndFormation(Vector2 coords) noexcept{
+    ESTANDAR(coords);
 }
 
 void Player::cambiarFormacion(Formaciones form) noexcept{

@@ -26,11 +26,16 @@ int main(){
 
     GameEntities gameEntities;
 
-    EntityGenerator generator{gameEntities};
-
     Player player;
 
+    Camera2D camera { 0 };
+    camera.target = (Vector2){ 0, 0 };
+    camera.offset = (Vector2){ SCREENWIDTH / 2.0f, SCREENWIDTH / 2.0f };
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+
     MapsHandler maps {};
+    EntityGenerator generator{gameEntities,camera};
 
     maps.addMap("assets/mapas/mapaXML.tmx");
 
@@ -49,13 +54,16 @@ int main(){
 
     while(!WindowShouldClose()){
 
-        input.Update(gameEntities, player);
+        input.Update(gameEntities, player,camera);
         colision.Update(gameEntities,player);
         physics.Update(gameEntities);
 
-        BeginDrawing(); 
-            maps.printMap();
+        BeginDrawing();
+        ClearBackground(BLACK);
+        BeginMode2D(camera);
+            maps.printMap(camera);
             render.Update(gameEntities, player);
+        EndMode2D();
         EndDrawing();
 
     }

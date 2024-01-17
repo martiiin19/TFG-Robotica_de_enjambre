@@ -7,7 +7,7 @@
     }
 //}
 
-EntityGenerator::EntityGenerator(GameEntities& game) : ents(game) {}
+EntityGenerator::EntityGenerator(GameEntities& game,Camera2D& cam) : ents{game},camera{cam} {}
 
 void EntityGenerator::CreateEntity(Vector2 pos = {0.0,0.0},Vector2 vel = {0.0,0.0}, TypeEntity type = TypeEntity::SOLDIER) noexcept{
     Entity* ent = new Entity(id_iteration,type,pos,pos,vel,{W_SOLDIER,H_SOLDIER});

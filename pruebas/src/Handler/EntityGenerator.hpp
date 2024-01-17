@@ -12,7 +12,7 @@
 
 struct EntityGenerator
 {
-    explicit EntityGenerator(GameEntities&);
+    explicit EntityGenerator(GameEntities&,Camera2D&);
 
     void CreateEntity(Vector2 pos,Vector2 vel,TypeEntity type) noexcept;
 
@@ -28,5 +28,6 @@ struct EntityGenerator
     private:
         //Variables
         GameEntities& ents;
+        Camera2D& camera;
         
 };

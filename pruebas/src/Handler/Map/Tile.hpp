@@ -36,12 +36,13 @@ struct Tile {
         tileset.QueryAttribute("tileheight",&tileHeight);
         int rows = numRows(tileset);
         int columns =numColumns(tileset);
-        float columna = id / columns;
-        float fila = id / rows;
-
+        float columna = id % columns;
+        float fila = id / columns;
+        
         tile = {columna*tileWidth ,fila*tileHeight , tileWidth, tileHeight };
 
-        tilesetPath = tileset.Value();
+        tilesetPath = tileset.FirstChildElement("image")->Attribute("source");
+        
     }
 
     void printTile(Vector2 pos){

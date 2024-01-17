@@ -24,9 +24,9 @@ struct Player
 
     int anyEntitySelected() noexcept;
 
-    void moveEntity() noexcept;
+    void moveEntity(Vector2 coords) noexcept;
 
-    void moveAndFormation() noexcept;
+    void moveAndFormation(Vector2 coords) noexcept;
 
     Mouse& getMouse(){
         return mouse;

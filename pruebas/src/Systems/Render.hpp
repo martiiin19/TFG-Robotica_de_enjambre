@@ -17,7 +17,7 @@ struct Render_System
 {
     
     void Update(GameEntities& game, Player& player){
-        ClearBackground(BLACK);
+        //ClearBackground(BLACK);
         
         if(player.isDrawing){
             DrawRectangleRec(player.rectSelection,WHITE);
