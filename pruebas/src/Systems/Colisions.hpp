@@ -20,7 +20,7 @@ struct Colisions_System
     std::pair<float, float> lineCalculator(Vector2 entity, Vector2 structure,Camera2D& camera){
         //std::cout << entity.x << " " << entity.y << "<->" << structure.x << " " << structure.y << std::endl;
         //y = mx+b
-        float m = (entity.y - structure.y)/(entity.x-structure.y);
+        float m = (entity.y - structure.y)/(entity.x-structure.x);
         DrawLineV(GetWorldToScreen2D(structure,camera) ,GetWorldToScreen2D(entity,camera),YELLOW);
         float b = entity.y - m*entity.x;
 
@@ -50,7 +50,11 @@ struct Colisions_System
             float y2 = m * x2 + b;
             DrawLineV(GetWorldToScreen2D(center,camera) ,GetWorldToScreen2D({x1,y1},camera),YELLOW);
             DrawLineV(GetWorldToScreen2D(center,camera) ,GetWorldToScreen2D({x2,y2},camera),YELLOW);
-            if(ent->getPosition().y > center.y){
+            if(ent->getPosition().y > center.y && ent->getPosition().x > center.x){
+                ent->setRepulsion({x1,y1});
+            }else if(ent->getPosition().y > center.y && ent->getPosition().x < center.x){
+                ent->setRepulsion({x2,y2});
+            }else if(ent->getPosition().y < center.y && ent->getPosition().x > center.x){
                 ent->setRepulsion({x1,y1});
             }else{
                 ent->setRepulsion({x2,y2});
