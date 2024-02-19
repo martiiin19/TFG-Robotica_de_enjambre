@@ -70,7 +70,6 @@ struct Map
         map->QueryAttribute("height",&filas);
         map->QueryAttribute("tilewidth",&tilewidth);
         map->QueryAttribute("tileheight",&tileheight);
-        int i = 0;
         for(XMLElement* child = map->FirstChildElement("layer"); child != nullptr; child = child->NextSiblingElement("layer")){//MAL hay que leer los tiles no solo uno
             XMLElement* data = child->FirstChildElement("data");
             for(XMLElement* tile = data->FirstChildElement("tile"); tile != nullptr; tile = tile->NextSiblingElement("tile")){
@@ -80,12 +79,11 @@ struct Map
                     
                     Tile* nuevo = new Tile(id,*getTilesetXMLElement(id),textureComparer(getTilesetXMLElement(id)->FirstChildElement("image")->Attribute("source"),texts),firstid);//se crea el tile pero tengo que saber que tileset pasarle
                     tiles.emplace_back(nuevo);
-                    i++;
                 }
                    
             }
         }
-        std::cout << i << std::endl;
+        //std::cout << i << std::endl;
         putObjects(cam,gen);
     }
     
@@ -101,9 +99,9 @@ struct Map
                         int m_X = (x - y) * tilewidth / 2;
                         int m_Y = (x + y) * tileheight / 2;
                         Vector2 pos {m_X,m_Y};
-                        std::cout << i << std::endl;
+
                         tiles[i]->printTile(pos);
-                        //printTile(std::stoi(firstTile->Attribute("gid")),pos);
+                        
                         i++;
                     }
                     firstTile = firstTile->NextSiblingElement("tile");
@@ -113,7 +111,7 @@ struct Map
         
     }
 
-    void createStructures(XMLElement* objectgroup,EntityGenerator& gen){
+    void createStructures(XMLElement* objectgroup,EntityGenerator& gen,Camera2D& cam){
         for(XMLElement* object = objectgroup->FirstChildElement("object");object!=nullptr;object = object->NextSiblingElement("object")){
             float m_X = (std::stof(object->Attribute("x")) - std::stof(object->Attribute("y")))/2;
             float m_Y = (std::stof(object->Attribute("x")) + std::stof(object->Attribute("y")))/2;
@@ -125,7 +123,7 @@ struct Map
         for(XMLElement* child = map->FirstChildElement("objectgroup"); child!=nullptr; child = child->NextSiblingElement("objectgroup")){
             std::string name = child->Attribute("name");
             if(name =="Structuras"){
-                createStructures(child,gen);
+                createStructures(child,gen,cam);
             }
         }
     }

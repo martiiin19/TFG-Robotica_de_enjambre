@@ -35,13 +35,18 @@ int main(){
     camera.zoom = 1.0f;
 
     EntityGenerator generator{gameEntities,camera};
-    generator.CreateEntity({1000,200},{0,0},TypeEntity::SOLDIER);
-    generator.CreateEntity({300,300},{0,0},TypeEntity::STRUCTURE);
-    generator.CreateEntity({800,800},{0,0},TypeEntity::STRUCTURE);
+    //generator.CreateEntity({1000,200},{0,0},TypeEntity::SOLDIER);
+    //generator.CreateEntity({-400,300},{0,0},TypeEntity::STRUCTURE);
+    //generator.CreateEntity({800,800},{0,0},TypeEntity::STRUCTURE);
+    generator.CreateEntities(30);
 
     MapsHandler maps {generator, camera};
 
     maps.addMap("assets/mapas/mapaXML.tmx");
+
+    for(auto& stc : gameEntities.getEntities(TypeEntity::STRUCTURE)){
+        std::cout << stc->getPosition().x << " : " << stc->getPosition().y << std::endl;
+    }
 
     Render_System render;
     Physics_System physics;

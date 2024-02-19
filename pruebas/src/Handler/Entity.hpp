@@ -19,7 +19,7 @@
 #include <array>
 
 #define FACTOR_DESTINO 3
-#define FACTOR_REPULSION 1.5
+#define FACTOR_REPULSION 2.2
 
 struct Entity
 {
@@ -118,11 +118,11 @@ struct Entity
             mover();
             rect.x = position.x;
             rect.y = position.y;
+        }else if(destination[1].x!=0 && destination[1].y!=0){
+            DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[1],camera),BLUE);
+            setDestination(destination[1]);
         }
         DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[0],camera),RED);
-        if(destination[1].x!=0 && destination[1].y!=0){
-            DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[1],camera),BLUE);
-        }
         //std::cout << position.x << "<=>" << position.y << std::endl;
         
     }
