@@ -115,9 +115,9 @@ struct Map
 
     void createStructures(XMLElement* objectgroup,EntityGenerator& gen){
         for(XMLElement* object = objectgroup->FirstChildElement("object");object!=nullptr;object = object->NextSiblingElement("object")){
-            int m_X = (std::stof(object->Attribute("x")) - std::stof(object->Attribute("y")))/2;
-            int m_Y = (std::stof(object->Attribute("x")) + std::stof(object->Attribute("y")))/2;
-            gen.CreateStructure(m_X,m_Y);
+            float m_X = (std::stof(object->Attribute("x")) - std::stof(object->Attribute("y")))/2;
+            float m_Y = (std::stof(object->Attribute("x")) + std::stof(object->Attribute("y")))/2;
+            gen.CreateEntity({m_X,m_Y},{0,0},TypeEntity::STRUCTURE);
         }
     }
 
