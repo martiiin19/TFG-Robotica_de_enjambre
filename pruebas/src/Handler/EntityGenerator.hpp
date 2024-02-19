@@ -18,6 +18,8 @@ struct EntityGenerator
 
     void CreateEntities(int n) noexcept;
 
+    void CreateStructure(float x, float y) noexcept;
+
     protected:
         //Functions
         Vector2 randomPosition() noexcept;

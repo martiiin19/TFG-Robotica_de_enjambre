@@ -5,10 +5,11 @@
 #include "Map.hpp"
 #include <iostream>
 #include "../Textura.hpp"
+#include "../EntityGenerator.hpp"
 
 struct MapsHandler{
 
-    explicit MapsHandler(){}
+    explicit MapsHandler(EntityGenerator& generator, Camera2D& camera) : gen{generator}, cam{camera} {}
 
     void addMap(const char* path){
         Map* m = new Map(path);
@@ -30,7 +31,7 @@ struct MapsHandler{
                 } 
             }
         }
-        m->readMap(textures);
+        m->readMap(textures,gen,cam);
         
     }
 
@@ -50,7 +51,7 @@ struct MapsHandler{
        
     }
 
-    void printMap(Camera2D& cam){
+    void printMap(){
 
         maps.at(id)->printMap(cam); // esto hay que cambiarlo por un vector personalizado a la mapa con sus tilesets
     }
@@ -61,4 +62,6 @@ struct MapsHandler{
         int id { 0 };
         std::vector<Map*> maps;   
         std::vector<Textura*> textures;
+        EntityGenerator& gen;
+        Camera2D& cam;
 };
