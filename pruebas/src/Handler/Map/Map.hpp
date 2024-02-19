@@ -7,6 +7,7 @@
 #include "Tile.hpp"
 #include <vector>
 #include "../Textura.hpp"
+#include "../EntityGenerator.hpp"
 
 using namespace tinyxml2;
 
@@ -64,39 +65,32 @@ struct Map
         return nullptr;
     }
 
-    void readMap(std::vector<Textura*>& texts){ // esta funcion se llamara los mas seguro desde el addMap para dejar preparado el mapa y solo printearlo
+    void readMap(std::vector<Textura*>& texts,EntityGenerator& gen, Camera2D& cam){ // esta funcion se llamara los mas seguro desde el addMap para dejar preparado el mapa y solo printearlo
         map->QueryAttribute("width",&columnas);
         map->QueryAttribute("height",&filas);
         map->QueryAttribute("tilewidth",&tilewidth);
         map->QueryAttribute("tileheight",&tileheight);
-        bool centinela {false};
+        int i = 0;
         for(XMLElement* child = map->FirstChildElement("layer"); child != nullptr; child = child->NextSiblingElement("layer")){//MAL hay que leer los tiles no solo uno
             XMLElement* data = child->FirstChildElement("data");
             for(XMLElement* tile = data->FirstChildElement("tile"); tile != nullptr; tile = tile->NextSiblingElement("tile")){
                 if(tile->Attribute("gid")){
-                    if(!tiles.empty()){
-                        for(auto* t : tiles){
-                            if(std::stoi(tile->Attribute("gid")) == t->getID()){
-                                centinela = true;
-                            }
-                        }
-                    }
-                    if(centinela == false){
-                        int id = std::stoi(tile->Attribute("gid"));
-                        int firstid = std::stoi(getTilesetXMLElement(id)->Attribute("firstgid"));
-                        
-                        Tile* nuevo = new Tile(id,*getTilesetXMLElement(id),textureComparer(getTilesetXMLElement(id)->FirstChildElement("image")->Attribute("source"),texts),firstid);//se crea el tile pero tengo que saber que tileset pasarle
-                        tiles.emplace_back(nuevo);
-                    }else{
-                        centinela = false;
-                    }
+                    int id = std::stoi(tile->Attribute("gid"));
+                    int firstid = std::stoi(getTilesetXMLElement(id)->Attribute("firstgid"));
+                    
+                    Tile* nuevo = new Tile(id,*getTilesetXMLElement(id),textureComparer(getTilesetXMLElement(id)->FirstChildElement("image")->Attribute("source"),texts),firstid);//se crea el tile pero tengo que saber que tileset pasarle
+                    tiles.emplace_back(nuevo);
+                    i++;
                 }
                    
             }
         }
+        std::cout << i << std::endl;
+        putObjects(cam,gen);
     }
     
     void printLayers(Camera2D& cam){
+        int i = 0;
         for(XMLElement* child = map->FirstChildElement("layer"); child != nullptr; child = child->NextSiblingElement("layer")){
             XMLElement* firstTile = child->FirstChildElement("data")->FirstChildElement("tile");
             
@@ -107,9 +101,10 @@ struct Map
                         int m_X = (x - y) * tilewidth / 2;
                         int m_Y = (x + y) * tileheight / 2;
                         Vector2 pos {m_X,m_Y};
-                        
-                        printTile(std::stoi(firstTile->Attribute("gid")),pos);
-                         
+                        std::cout << i << std::endl;
+                        tiles[i]->printTile(pos);
+                        //printTile(std::stoi(firstTile->Attribute("gid")),pos);
+                        i++;
                     }
                     firstTile = firstTile->NextSiblingElement("tile");
                 }
@@ -118,23 +113,26 @@ struct Map
         
     }
 
-    void putObjetcs(){
+    void createStructures(XMLElement* objectgroup,EntityGenerator& gen){
+        for(XMLElement* object = objectgroup->FirstChildElement("object");object!=nullptr;object = object->NextSiblingElement("object")){
+            int m_X = (std::stof(object->Attribute("x")) - std::stof(object->Attribute("y")))/2;
+            int m_Y = (std::stof(object->Attribute("x")) + std::stof(object->Attribute("y")))/2;
+            gen.CreateStructure(m_X,m_Y);
+        }
+    }
 
+    void putObjects(Camera2D& cam,EntityGenerator& gen){ // a esto se le pasa el generador
+        for(XMLElement* child = map->FirstChildElement("objectgroup"); child!=nullptr; child = child->NextSiblingElement("objectgroup")){
+            std::string name = child->Attribute("name");
+            if(name =="Structuras"){
+                createStructures(child,gen);
+            }
+        }
     }
 
 
     void printMap(Camera2D& cam){
        printLayers(cam);
-       putObjetcs();
-    }
-
-    void printTile(int gid, Vector2 pos){
-        for(auto& t :tiles){
-            if(gid == t->getID()){
-                t->printTile(pos);
-                //std::cout<< t->getID() << std::endl;
-            }
-        }
     }
 
     const char* getPath(){

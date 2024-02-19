@@ -4,6 +4,8 @@
 
 #include "TypeEntity.hpp"
 
+#include "Attitude.hpp"
+
 #include <cmath>
 
 #include "Sprite.hpp"
@@ -14,18 +16,27 @@
 
 #include <iostream>
 
-#define MAGNITUD_REPULSION 1.0f
-#define MAGNITUD_VELOCIDAD 1.0f
+#include <array>
+
+#define FACTOR_DESTINO 3
+#define FACTOR_REPULSION 1.5
 
 struct Entity
 {
     explicit Entity(int pID, TypeEntity pTYPE = TypeEntity::SOLDIER, Vector2 pPOS = {0.0, 0.0}, Vector2 pDEST = {0.0, 0.0}, Vector2 pVEL = {0.0, 0.0}, Vector2 pSIZE = {25,25}) : 
-    id(pID), type(pTYPE), destination(pDEST), velocities(pVEL), position(pPOS) {
+    id(pID), type(pTYPE), position(pPOS) {
         setDestination(pDEST);
+        setRepulsion({0,0});
         if(type == TypeEntity::SOLDIER){
-            color = RED;
+            //color = RED;
+            att = Attitude::PASIVA;
         }else{
-            color = MAROON;
+            //color = MAROON;
+            att = Attitude::INDEFINIDA;
+        }
+        for(auto& fuerza : fuerzas){
+            fuerza.x = 0;
+            fuerza.y = 0;
         }
         rect = {position.x, position.y, pSIZE.x, pSIZE.y};
     }
@@ -35,71 +46,84 @@ struct Entity
     }
     
     //Funciones para modificar los vectores
-
-    
     Vector2 getPosition(){
         Vector2 pos;
-        pos.x = rect.x + rect.width / 2;
-        pos.y = rect.y + rect.height / 2;
+        pos.x = position.x;
+        pos.y = position.y;
         return pos;
     }
 
     Vector2& getVelocity(){
-        return velocities;
+        return fuerzas[0];
     }
 
     Vector2 getDestination(){
-        return destination;
+        return destination[0];
     }
 
-    void setVelocity(Vector2 vel){
-        velocities.x += vel.x;
-        velocities.y += vel.y;
-    }
-
-    void setRepulsion(float aux){
-        repulsion = {static_cast<float>((velocities.x*MAGNITUD_REPULSION) + MAGNITUD_REPULSION*cos(aux)), // X
-                    static_cast<float>((velocities.y*MAGNITUD_REPULSION) + MAGNITUD_REPULSION*sin(aux))}; // Y
-    }
-
-    bool getSTC(){
-        return stc;
-    }
-
-    void setSTC(bool aux){
-        stc = aux;
+    void setVelocity(Vector2 f){
+        fuerzas[0].x += f.x;
+        fuerzas[0].y += f.y;
     }
 
     void setDestination(Vector2 dest){
-        destination.x = dest.x;
-        destination.y = dest.y;
-        
-        float deltaX = destination.x - position.x;
-        float deltaY = destination.y - position.y;
-        float distancia = std::sqrt(deltaX * deltaX + deltaY * deltaY);
-    
-        if (distancia > 0) {
-            velocities.x = (deltaX / distancia) * VEL_SOLDIER;
-            velocities.y = (deltaY / distancia) * VEL_SOLDIER;
-        }else{
-            velocities.x = 0.f;
-            velocities.y = 0.f;
-        }   
-        
-        
+        destination[0].x = dest.x;
+        destination[0].y = dest.y;
+    }
+
+    void setRepulsion(Vector2 rep){
+        destination[1].x = rep.x;
+        destination[1].y = rep.y;
+    }
+
+    void mover(){
+        position.x += fuerzas[0].x + fuerzas[1].x;
+        position.y += fuerzas[0].y + fuerzas[1].y;
+    }
+
+    void calcularFuerzas(Camera2D& camera){
+        for(int i = 0; i<fuerzas.size(); i++){
+             // Calcula el vector de dirección hacia el destino
+            float direccion_x = destination[i].x - position.x;
+            float direccion_y = destination[i].y - position.y;
+
+            // Calcula la magnitud del vector de dirección
+            float magnitud = std::sqrt(direccion_x * direccion_x + direccion_y * direccion_y);
+
+            // Calcula el vector de fuerza basado en la dirección y el factor
+            switch (i){
+                case 0:
+                    fuerzas[i].x = direccion_x / magnitud * FACTOR_DESTINO;
+                    fuerzas[i].y = direccion_y / magnitud * FACTOR_DESTINO;
+                    
+                    break;
+                case 1:
+                    if(destination[i].x == 0 && destination[i].y ==0){
+                        fuerzas[i].x = 0;
+                        fuerzas[i].y = 0;
+                    }else{
+                        fuerzas[i].x = direccion_x / magnitud * FACTOR_REPULSION;
+                        fuerzas[i].y = direccion_y / magnitud * FACTOR_REPULSION;
+                        
+                    }
+                    break;
+            }
+        }
+       
     }
    
-    void Update(){
-        // Ángulo y magnitud de la repulsión
-        if(std::abs(position.x - destination.x) > VEL_SOLDIER || std::abs(position.y - destination.y) > VEL_SOLDIER){
-            if(stc){
-                position = {position.x + repulsion.x, position.y + repulsion.y};
-            }else{
-                position = {position.x + velocities.x, position.y + velocities.y};
-            }
+    void Update(Camera2D& camera){
+        if(std::abs(position.x - destination[0].x) > VEL_SOLDIER || std::abs(position.y - destination[0].y) > VEL_SOLDIER){
+            calcularFuerzas(camera);
+            mover();
             rect.x = position.x;
             rect.y = position.y;
         }
+        DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[0],camera),RED);
+        if(destination[1].x!=0 && destination[1].y!=0){
+            DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[1],camera),BLUE);
+        }
+        //std::cout << position.x << "<=>" << position.y << std::endl;
         
     }
 
@@ -123,7 +147,13 @@ struct Entity
 
     void drawEntity(){
         //DrawRectangleRec(rect,color);
-        spr.drawSprite(position);
+        
+        if(type == TypeEntity::STRUCTURE){
+            DrawPixelV(position,WHITE);
+            DrawCircleLines(position.x,position.y,70,GREEN);
+        }else{
+            spr.drawSprite(position);
+        }
     }
 
     Rectangle& getRectangle(){
@@ -141,24 +171,17 @@ struct Entity
 
     void changeSelected(bool state){
         selected = state;
-        if(state){
-            color = GREEN;
-        }else{
-            color = RED;
-        }
-        
     }
 
     private:
         int id;
         TypeEntity type;
-        Vector2 destination {0.0, 0.0};
-        Vector2 velocities {0.0, 0.0};  // Probablemente hay que cambiarlo a un vector de la libreria raylib
-        Vector2 repulsion {0.0, 0.0};
+        std::array<Vector2,2> destination;
+        std::array<Vector2,2> fuerzas;
         Vector2 position {0.0, 0.0};  // Probablemente hay que cambiarlo a un vector de la libreria raylib
         bool selected {false};
         bool colision {false};
-        bool stc {false};
+        Attitude att { Attitude::INDEFINIDA };
 
         Sprite spr {};
 

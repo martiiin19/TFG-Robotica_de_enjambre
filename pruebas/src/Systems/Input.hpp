@@ -17,7 +17,7 @@ struct Input_System
 
     void Update(GameEntities& entities, Player& player, Camera2D& camera){
         player.getMouse().Update();
-        //std::cout << "X: " << player.getMouse().getCoord().x << " Y: " << player.getMouse().getCoord().y << std::endl;
+        //std::cout << "X: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).x << " Y: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).y << std::endl;
 
         lastGesture = currentGesture;
         currentGesture = GetGestureDetected();
@@ -58,7 +58,7 @@ struct Input_System
         }
         
 
-        // esto es para movernos de momento con la camara se cambiara en un futuro no muy lejano
+        // esto es para movernos de momento con la camara se cambiara en un futuro 
         if (IsKeyDown(KEY_RIGHT)) {
             camera.target.x += 5.0f;
         }
@@ -71,7 +71,7 @@ struct Input_System
         if (IsKeyDown(KEY_UP)) {
             camera.target.y -= 5.0f;
         }
-
+        //std::cout << camera.target.x << " : " << camera.target.y << std::endl; 
     }
 
     private:

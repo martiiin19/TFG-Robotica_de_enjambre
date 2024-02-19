@@ -9,10 +9,10 @@
 struct Physics_System
 {
     
-    void Update(GameEntities& game){
+    void Update(GameEntities& game,Camera2D& camera){
         for(auto& ent : game.getEntities(TypeEntity::SOLDIER)){
             
-            ent->Update();
+            ent->Update(camera);
         }
     }
 

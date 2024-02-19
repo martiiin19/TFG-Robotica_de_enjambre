@@ -34,8 +34,12 @@ int main(){
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-    MapsHandler maps {};
     EntityGenerator generator{gameEntities,camera};
+    generator.CreateEntity({1000,200},{0,0},TypeEntity::SOLDIER);
+    generator.CreateEntity({300,300},{0,0},TypeEntity::STRUCTURE);
+    generator.CreateEntity({800,800},{0,0},TypeEntity::STRUCTURE);
+
+    MapsHandler maps {generator, camera};
 
     maps.addMap("assets/mapas/mapaXML.tmx");
 
@@ -44,8 +48,7 @@ int main(){
     Input_System input;
     Colisions_System colision;
 
-    generator.CreateEntity({1000,200},{0,0},TypeEntity::SOLDIER);
-    generator.CreateEntity({500,500},{0,0},TypeEntity::STRUCTURE);
+    
     //generator.CreateEntities(30);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
@@ -55,13 +58,14 @@ int main(){
     while(!WindowShouldClose()){
 
         input.Update(gameEntities, player,camera);
-        colision.Update(gameEntities,player);
-        physics.Update(gameEntities);
+        
+        physics.Update(gameEntities,camera);
+        colision.Update(gameEntities,player,camera);
 
         BeginDrawing();
         ClearBackground(BLACK);
         BeginMode2D(camera);
-            maps.printMap(camera);
+            //maps.printMap();
             render.Update(gameEntities, player);
         EndMode2D();
         EndDrawing();
