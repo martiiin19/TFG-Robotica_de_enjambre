@@ -54,7 +54,6 @@ int main(){
     Colisions_System colision;
 
     
-    //generator.CreateEntities(30);
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------

@@ -39,31 +39,58 @@ int Player::anyEntitySelected() noexcept{
     return aux;
 }
 
+void Player::atacar() noexcept{
+    for(auto* ent : arraySeleccion){
+        if(ent!=nullptr){
+            ent->Atacar(mouse.getEnt());
+        }   
+    }
+}
+
 void Player::moveEntity(Vector2 coords) noexcept{
     if(arraySeleccion[0] != nullptr){
-        Vector2 aux = {coords.x - W_SOLDIER/2,coords.y -H_SOLDIER/2};
-        arraySeleccion[0]->setDestination(aux);
+        //Vector2 aux = {coords.x - W_SOLDIER/2,coords.y -H_SOLDIER/2};
+        arraySeleccion[0]->setDestination(coords);
+        arraySeleccion[0]->setEnemigo();
     }
 }
 
 void Player::moveAndFormation(Vector2 coords) noexcept{
-    ESTANDAR(coords);
+    for(auto* ent : arraySeleccion){
+        if(ent != nullptr){
+            ent->setEnemigo();
+        }
+    }
+    positionFormation = coords;
+    hacerFormacion();
 }
 
+void Player::cambiarActitud(Attitude att) noexcept{
+    for(auto* ent : arraySeleccion){
+        if(ent != nullptr){
+            ent->setAttitude(att);
+        }
+    }
+}
+
+
 void Player::cambiarFormacion(Formaciones form) noexcept{
-    //Cuando este hecha la seleccion pasamos a esta funcion
-    //En un principio hay que hacer un switch para que llame a las funciones en protected
-    //Hay que hacer algo para sacar la cantidad de entidades que contiene el array aunque sea un array con capacidad limitada
-    switch (form)
+    formation = form;
+    hacerFormacion();
+}
+
+void Player::hacerFormacion() noexcept{
+    
+    switch (formation)
     {
     case Formaciones::ESTANDAR:
-        //ESTANDAR();
+        ESTANDAR(positionFormation);
         break;
     case Formaciones::CIRCULO:
-        //CIRCULO();
+        CIRCULO(positionFormation);
         break;
     case Formaciones::TRIANGULO:
-        //TRIANGULO();
+        TRIANGULO(positionFormation);
         break;
     default:
         std::cout << "Formacion no disponible" << std::endl;
@@ -98,7 +125,7 @@ void Player::ESTANDAR(Vector2 coord) noexcept{
 void Player::CIRCULO(Vector2 coord) noexcept{
     int numeroEntidades = anyEntitySelected();
 
-    float radius = 100;
+    float radius = 70;
 
     for (int i = 0; i < numeroEntidades; i++) {
         double angle = 2 * M_PI * i / numeroEntidades; // Ángulo igualmente espaciado entre las entidades.
@@ -110,7 +137,25 @@ void Player::CIRCULO(Vector2 coord) noexcept{
 }
 
 void Player::TRIANGULO(Vector2 coord) noexcept{
-    //int numeroEntidades = anyEntitySelected();
+    int numeroEntidades = anyEntitySelected();
 
+    int numFilas = 6;
+
+    int prog = 0;
+    int ent = 0;
+    for(int i=0;i<numFilas;i++){
+        prog++;
+        for(int j = 0; j<prog;j++){
+            Vector2 dest;
+            dest.x = coord.x+j*(W_SOLDIER) -i*12;
+            dest.y = coord.y +i*(H_SOLDIER);
+            //std::cout << dest.x << " : " << dest.y << std::endl;
+            if(ent < numeroEntidades){
+                arraySeleccion[ent]->setDestination(dest);
+                ent++;
+            }
+        }
+        
+    }
 
 }
