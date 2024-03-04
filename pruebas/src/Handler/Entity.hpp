@@ -20,25 +20,23 @@
 
 #define FACTOR_DESTINO 3
 #define FACTOR_REPULSION 2.2
+#define DISTANCIA_DE_ATAQUE 20
 
 struct Entity
 {
-    explicit Entity(int pID, TypeEntity pTYPE = TypeEntity::SOLDIER, Vector2 pPOS = {0.0, 0.0}, Vector2 pDEST = {0.0, 0.0}, Vector2 pVEL = {0.0, 0.0}, Vector2 pSIZE = {25,25}) : 
-    id(pID), type(pTYPE), position(pPOS) {
+    explicit Entity(int pID, TypeEntity pTYPE = TypeEntity::SOLDIER, Vector2 pPOS = {0.0, 0.0}, Vector2 pDEST = {0.0, 0.0}, Vector2 pVEL = {0.0, 0.0}, Vector2 pSIZE = {25,25}, int bando = 0) : 
+    id(pID), type(pTYPE), position(pPOS),tipo(bando) {
         setDestination(pDEST);
         setRepulsion({0,0});
         if(type == TypeEntity::SOLDIER){
-            //color = RED;
             att = Attitude::PASIVA;
-        }else{
-            //color = MAROON;
-            att = Attitude::INDEFINIDA;
+            daño = 20;
         }
         for(auto& fuerza : fuerzas){
             fuerza.x = 0;
             fuerza.y = 0;
         }
-        rect = {position.x, position.y, pSIZE.x, pSIZE.y};
+        rect = {position.x-W_SOLDIER/2, position.y-H_SOLDIER/2, pSIZE.x, pSIZE.y};
     }
 
     int getID(){
@@ -47,10 +45,7 @@ struct Entity
     
     //Funciones para modificar los vectores
     Vector2 getPosition(){
-        Vector2 pos;
-        pos.x = position.x;
-        pos.y = position.y;
-        return pos;
+        return position;
     }
 
     Vector2& getVelocity(){
@@ -111,13 +106,60 @@ struct Entity
         }
        
     }
+
+    void actualizarAtaque(Camera2D& camera){
+        
+        float m = (position.y - enemigo->getPosition().y)/(position.x-enemigo->getPosition().x);
+        float b = position.y - m*position.x;
+
+        float h = enemigo->getPosition().x;
+        float k = enemigo->getPosition().y;
+
+        Vector2 pos1,pos2;
+
+        float A = 1+m*m;
+        float B = (2*m*(b-k)-2*h);
+        float C = h*h+(b-k)*(b-k)-DISTANCIA_DE_ATAQUE*DISTANCIA_DE_ATAQUE;
+
+
+        float discriminante = B*B-4*A*C;
+
+        pos1.x = (-B+std::sqrt(discriminante))/(2*A);
+        pos1.y = m*pos1.x + b;
+
+        pos2.x = (-B-std::sqrt(discriminante))/(2*A);
+        pos2.y = m*pos2.x + b;
+
+        DrawCircleV(GetWorldToScreen2D(pos1,camera),3,WHITE);
+        DrawCircleV(GetWorldToScreen2D(pos2,camera),3,WHITE);
+        DrawCircleV(GetWorldToScreen2D(enemigo->getPosition(),camera),10,GREEN);
+
+        if(position.y > enemigo->getPosition().y && position.x > enemigo->getPosition().x){
+            setDestination(pos1);
+        }else if(position.y > enemigo->getPosition().y && position.x < enemigo->getPosition().x){
+            setDestination(pos2);
+        }else if(position.y < enemigo->getPosition().y && position.x > enemigo->getPosition().x){
+            setDestination(pos1);
+        }else{
+            setDestination(pos2);
+        }
+    }
+
+    void Atacar(Entity* e){
+        att = Attitude::OFENSIVA;
+        enemigo = e;
+    }
    
     void Update(Camera2D& camera){
+        if(enemigo != nullptr){
+            actualizarAtaque(camera);
+        }
         if(std::abs(position.x - destination[0].x) > VEL_SOLDIER || std::abs(position.y - destination[0].y) > VEL_SOLDIER){
+            
             calcularFuerzas(camera);
             mover();
-            rect.x = position.x;
-            rect.y = position.y;
+            rect.x = position.x-W_SOLDIER/2;
+            rect.y = position.y-H_SOLDIER/2;
         }else if(destination[1].x!=0 && destination[1].y!=0){
             DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[1],camera),BLUE);
             setDestination(destination[1]);
@@ -127,11 +169,12 @@ struct Entity
         
     }
 
-    void UpdateCollision(Vector2 mouse){
+    bool UpdateCollision(Vector2 mouse){
         colision = false;
         if(CheckCollisionPointRec(mouse,rect)){
             colision = true;
         }
+        return colision;
     }
 
     void UpdateRecColision(Rectangle& rec){
@@ -146,7 +189,7 @@ struct Entity
     }
 
     void drawEntity(){
-        //DrawRectangleRec(rect,color);
+        DrawRectangleRec(rect,color);
         
         if(type == TypeEntity::STRUCTURE){
             DrawPixelV(position,WHITE);
@@ -165,6 +208,14 @@ struct Entity
         // Antes de poner Spri
     }
 
+    Attitude getAttitude(){
+        return att;
+    }
+
+    void setAttitude(Attitude a){
+        att = a;
+    }
+
     bool isSelected(){
         return selected;
     }
@@ -173,8 +224,21 @@ struct Entity
         selected = state;
     }
 
+    int getBando(){
+        return tipo;
+    }
+
+    void setEnemigo(){
+        enemigo = nullptr;
+    }
+
+    Entity* getEnemigo(){
+        return enemigo;
+    }
+
     private:
         int id;
+        int tipo{0};//si es del jugador o de la maquina si es 0 player
         TypeEntity type;
         std::array<Vector2,2> destination;
         std::array<Vector2,2> fuerzas;
@@ -182,6 +246,9 @@ struct Entity
         bool selected {false};
         bool colision {false};
         Attitude att { Attitude::INDEFINIDA };
+        Entity* enemigo{nullptr};
+        int vida{100};
+        int daño;
 
         Sprite spr {};
 

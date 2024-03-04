@@ -17,7 +17,7 @@ struct Input_System
 
     void Update(GameEntities& entities, Player& player, Camera2D& camera){
         player.getMouse().Update();
-        //std::cout << "X: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).x << " Y: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).y << std::endl;
+        std::cout << "X: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).x << " Y: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).y << std::endl;
 
         lastGesture = currentGesture;
         currentGesture = GetGestureDetected();
@@ -31,11 +31,17 @@ struct Input_System
         }
         // Cambiar el destino de la entidad
         if(IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)){
-            if(player.anyEntitySelected() == 1){
-                player.moveEntity(GetScreenToWorld2D(player.getMouse().getCoord(),camera));
-            }else if(player.anyEntitySelected() > 1){
-                player.moveAndFormation(GetScreenToWorld2D(player.getMouse().getCoord(),camera));
+            if(player.getMouse().getColision() == true && player.getMouse().getEnt()->getBando()!=0){
+                player.atacar();
+                
+            }else{
+                if(player.anyEntitySelected() == 1){
+                    player.moveEntity(GetScreenToWorld2D(player.getMouse().getCoord(),camera));
+                }else if(player.anyEntitySelected() > 1){
+                    player.moveAndFormation(GetScreenToWorld2D(player.getMouse().getCoord(),camera));
+                }
             }
+            
         }
         // Seleccionar varias entidades
         if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && currentGesture == GESTURE_DRAG){
@@ -57,19 +63,42 @@ struct Input_System
             player.rectSelection.height = 0;
         }
         
+        if(IsKeyPressed(KEY_Q)){
+            player.cambiarFormacion(Formaciones::ESTANDAR);
+        }
+
+        if(IsKeyPressed(KEY_W)){
+            player.cambiarFormacion(Formaciones::CIRCULO);
+        }
+
+        if(IsKeyPressed(KEY_E)){
+            player.cambiarFormacion(Formaciones::TRIANGULO);
+        }
+
+        if(IsKeyPressed(KEY_A)){
+            player.cambiarActitud(Attitude::OFENSIVA);
+        }
+
+        if(IsKeyPressed(KEY_S)){
+            player.cambiarActitud(Attitude::DEFENSIVA);
+        }
+
+        if(IsKeyPressed(KEY_D)){
+            player.cambiarActitud(Attitude::PASIVA);
+        }
 
         // esto es para movernos de momento con la camara se cambiara en un futuro 
         if (IsKeyDown(KEY_RIGHT)) {
-            camera.target.x += 5.0f;
+            camera.target.x += 10.0f;
         }
         if (IsKeyDown(KEY_LEFT)) {
-            camera.target.x -= 5.0f;
+            camera.target.x -= 10.0f;
         }
         if (IsKeyDown(KEY_DOWN)) {
-            camera.target.y += 5.0f;
+            camera.target.y += 10.0f;
         }
         if (IsKeyDown(KEY_UP)) {
-            camera.target.y -= 5.0f;
+            camera.target.y -= 10.0f;
         }
         //std::cout << camera.target.x << " : " << camera.target.y << std::endl; 
     }

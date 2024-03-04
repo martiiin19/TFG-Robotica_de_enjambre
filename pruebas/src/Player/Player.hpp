@@ -19,8 +19,14 @@ struct Player
     void selectEntities(std::vector<Entity*> selecteds) noexcept;
 
     void deseleccionarEntidades() noexcept;
-    
+
+    void cambiarActitud(Attitude att) noexcept;
+
     void cambiarFormacion(Formaciones form) noexcept;
+
+    void atacar() noexcept;
+    
+    void hacerFormacion() noexcept;
 
     int anyEntitySelected() noexcept;
 
@@ -49,6 +55,8 @@ struct Player
     private:
         std::array<Entity*,20> arraySeleccion;
         Mouse mouse;
+        Formaciones formation{Formaciones::ESTANDAR};
+        Vector2 positionFormation;
         
         
         

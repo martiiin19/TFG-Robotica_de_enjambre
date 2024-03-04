@@ -10,7 +10,13 @@ struct Sprite
     }
 
     void drawSprite(Vector2 vec){
+        vec.x = vec.x -source.width/4;
+        vec.y = vec.y -source.height/4;
         DrawTextureRec(tex,source,vec,WHITE);
+    }
+
+    Rectangle& getSprite(){
+        return source;
     }
 
     private:

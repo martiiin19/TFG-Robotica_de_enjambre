@@ -63,11 +63,16 @@ struct Colisions_System
         }
     }
 
-    void updateColisionsToSelectEntities(Entity* ent,Player& player) noexcept{
-         ent->UpdateCollision(player.getMouse().getCoord());
-            if(player.rectSelection.width != 0 && player.rectSelection.height != 0){
-                ent->UpdateRecColision(player.rectSelection);
-            }   
+    void updateColisionsToSelectEntities(Entity* ent,Player& player,Camera2D& camera) noexcept{
+        bool flag = ent->UpdateCollision(GetScreenToWorld2D(player.getMouse().getCoord(),camera));
+        if(flag == true ){
+            player.getMouse().setColision(flag,ent);
+        }else if(ent == player.getMouse().getEnt() && flag == false){
+            player.getMouse().setColision(flag,nullptr);
+        }
+        if(player.rectSelection.width != 0 && player.rectSelection.height != 0){
+            ent->UpdateRecColision(player.rectSelection);
+        }   
     }
     
     
@@ -89,7 +94,7 @@ struct Colisions_System
     
     void Update(GameEntities& game, Player& player,Camera2D& camera){
         for(auto& ent : game.getEntities(TypeEntity::SOLDIER)){
-            updateColisionsToSelectEntities(ent,player); 
+            updateColisionsToSelectEntities(ent,player,camera); 
             updateColisionsWithStructures(ent,game,camera);
         }
     }
