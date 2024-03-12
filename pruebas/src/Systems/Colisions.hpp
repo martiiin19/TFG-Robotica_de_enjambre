@@ -42,7 +42,7 @@ struct Colisions_System
         if(discriminante == 0){
             float x = -B/(2*A);
             float y = m * x + b;
-            ent->setRepulsion({x,y});
+            static_cast<Soldier*>(ent)->setRepulsion({x,y});
         }else if(discriminante > 0){
             float x1 = (-B+std::sqrt(discriminante))/(2*A);
             float y1 = m * x1 + b;
@@ -51,13 +51,13 @@ struct Colisions_System
             DrawLineV(GetWorldToScreen2D(center,camera) ,GetWorldToScreen2D({x1,y1},camera),YELLOW);
             DrawLineV(GetWorldToScreen2D(center,camera) ,GetWorldToScreen2D({x2,y2},camera),YELLOW);
             if(ent->getPosition().y > center.y && ent->getPosition().x > center.x){
-                ent->setRepulsion({x1,y1});
+                static_cast<Soldier*>(ent)->setRepulsion({x1,y1});
             }else if(ent->getPosition().y > center.y && ent->getPosition().x < center.x){
-                ent->setRepulsion({x2,y2});
+                static_cast<Soldier*>(ent)->setRepulsion({x2,y2});
             }else if(ent->getPosition().y < center.y && ent->getPosition().x > center.x){
-                ent->setRepulsion({x1,y1});
+                static_cast<Soldier*>(ent)->setRepulsion({x1,y1});
             }else{
-                ent->setRepulsion({x2,y2});
+                static_cast<Soldier*>(ent)->setRepulsion({x2,y2});
             }
             
         }
@@ -87,7 +87,7 @@ struct Colisions_System
                 std::cout << stc->getID() << std::endl;
             }
             if(cent == false){
-                ent->setRepulsion({0,0});
+                static_cast<Soldier*>(ent)->setRepulsion({0,0});
             }
         }
     }

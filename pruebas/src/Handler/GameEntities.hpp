@@ -2,7 +2,7 @@
 
 //OWN CLASSES
 #include "Entity.hpp"
-
+#include "Soldier.hpp"
 
 #include <vector>
 #include <unordered_map>

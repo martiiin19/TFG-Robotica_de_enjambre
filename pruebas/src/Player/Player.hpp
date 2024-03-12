@@ -1,6 +1,7 @@
 #pragma once 
 
-#include "../Handler/Entity.hpp"
+//#include "../Handler/Entity.hpp"
+#include "../Handler/Soldier.hpp"
 
 #include <array>
 #include <vector>

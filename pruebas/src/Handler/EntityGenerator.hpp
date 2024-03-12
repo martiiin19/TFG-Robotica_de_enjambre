@@ -8,7 +8,8 @@
 
 #include <vector>
 
-#include "Entity.hpp"
+#include "Soldier.hpp"
+#include "Structure.hpp"
 
 struct EntityGenerator
 {

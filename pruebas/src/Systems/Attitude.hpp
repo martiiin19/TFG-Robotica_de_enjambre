@@ -22,8 +22,8 @@ struct Attitude_System
     void actitudOfensiva(GameEntities& game,Entity* ent){
         for(auto* e :game.getEntities(TypeEntity::SOLDIER)){
             if(e != ent){
-                if(e->getBando() != ent->getBando() && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < DISTANCIA_DETECCION_OFENSIVA && ent->getEnemigo()==nullptr){
-                    ent->Atacar(e,true);
+                if(e->getBando() != ent->getBando() && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < DISTANCIA_DETECCION_OFENSIVA && static_cast<Soldier*>(ent)->getEnemigo()==nullptr){
+                    static_cast<Soldier*>(ent)->Atacar(e,true);
                 }
             }
         }
@@ -32,8 +32,8 @@ struct Attitude_System
     void actitudDefensiva(GameEntities& game, Entity* ent){
         for(auto* e : game.getEntities(TypeEntity::SOLDIER)){
             if(e != ent){
-                if(e->getBando() != ent->getBando() && e->getEnemigo() == ent && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < DISTANCIA_DETECCION_DEFENSIVA){
-                    ent->Atacar(e,true);
+                if(e->getBando() != ent->getBando() && static_cast<Soldier*>(e)->getEnemigo() == ent && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < DISTANCIA_DETECCION_DEFENSIVA){
+                    static_cast<Soldier*>(ent)->Atacar(e,true);
                 }
             }
         }
@@ -41,7 +41,7 @@ struct Attitude_System
 
     void Update(GameEntities& game, Player& player,Camera2D& camera){
         for(auto* ent : game.getEntities(TypeEntity::SOLDIER)){
-            switch (ent->getAttitude())
+            switch (static_cast<Soldier*>(ent)->getAttitude())
             {
             case Attitude::OFENSIVA:
                 actitudOfensiva(game,ent);

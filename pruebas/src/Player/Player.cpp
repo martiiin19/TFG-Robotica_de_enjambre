@@ -12,7 +12,7 @@ void Player::selectEntities(std::vector<Entity*> selecteds) noexcept{
     unsigned int i = 0;
     for(auto& ent : selecteds){
         if(i < arraySeleccion.size()){
-            ent->changeSelected(true);
+            static_cast<Soldier*>(ent)->changeSelected(true);
             arraySeleccion[i] = ent;
             i++;
         }
@@ -22,7 +22,7 @@ void Player::selectEntities(std::vector<Entity*> selecteds) noexcept{
 void Player::deseleccionarEntidades() noexcept{
     for(unsigned int i = 0; i<arraySeleccion.size(); i++){
         if(arraySeleccion[i] != nullptr){
-            arraySeleccion[i]->changeSelected(false);
+            static_cast<Soldier*>(arraySeleccion[i])->changeSelected(false);
             arraySeleccion[i] = nullptr;
         }
         
@@ -42,7 +42,7 @@ int Player::anyEntitySelected() noexcept{
 void Player::atacar() noexcept{
     for(auto* ent : arraySeleccion){
         if(ent!=nullptr){
-            ent->Atacar(mouse.getEnt());
+            static_cast<Soldier*>(ent)->Atacar(mouse.getEnt());
         }   
     }
 }
@@ -50,15 +50,15 @@ void Player::atacar() noexcept{
 void Player::moveEntity(Vector2 coords) noexcept{
     if(arraySeleccion[0] != nullptr){
         //Vector2 aux = {coords.x - W_SOLDIER/2,coords.y -H_SOLDIER/2};
-        arraySeleccion[0]->setDestination(coords);
-        arraySeleccion[0]->setEnemigo();
+        static_cast<Soldier*>(arraySeleccion[0])->setDestination(coords);
+        static_cast<Soldier*>(arraySeleccion[0])->setEnemigo();
     }
 }
 
 void Player::moveAndFormation(Vector2 coords) noexcept{
     for(auto* ent : arraySeleccion){
         if(ent != nullptr){
-            ent->setEnemigo();
+            static_cast<Soldier*>(ent)->setEnemigo();
         }
     }
     positionFormation = coords;
@@ -68,7 +68,7 @@ void Player::moveAndFormation(Vector2 coords) noexcept{
 void Player::cambiarActitud(Attitude att) noexcept{
     for(auto* ent : arraySeleccion){
         if(ent != nullptr){
-            ent->setAttitude(att);
+            static_cast<Soldier*>(ent)->setAttitude(att);
         }
     }
 }
@@ -113,7 +113,7 @@ void Player::ESTANDAR(Vector2 coord) noexcept{
             float x = (coord.x-w_rect) + columna * std::sqrt(A_SOLDIER+SEPARATION_BETWEEN_ENTITIES);
             float y = (coord.y-h_rect) + fila * std::sqrt(A_SOLDIER+SEPARATION_BETWEEN_ENTITIES);
             if(i < numeroEntidades){
-                arraySeleccion[i]->setDestination({x,y});
+                static_cast<Soldier*>(arraySeleccion[i])->setDestination({x,y});
                 i++;
             }
             
@@ -132,7 +132,7 @@ void Player::CIRCULO(Vector2 coord) noexcept{
         Vector2 dest;
         dest.x = coord.x + radius * cos(angle);
         dest.y = coord.y + radius * sin(angle);
-        arraySeleccion[i]->setDestination(dest);
+        static_cast<Soldier*>(arraySeleccion[i])->setDestination(dest);
     }
 }
 
@@ -151,7 +151,7 @@ void Player::TRIANGULO(Vector2 coord) noexcept{
             dest.y = coord.y +i*(H_SOLDIER);
             //std::cout << dest.x << " : " << dest.y << std::endl;
             if(ent < numeroEntidades){
-                arraySeleccion[ent]->setDestination(dest);
+                static_cast<Soldier*>(arraySeleccion[ent])->setDestination(dest);
                 ent++;
             }
         }
