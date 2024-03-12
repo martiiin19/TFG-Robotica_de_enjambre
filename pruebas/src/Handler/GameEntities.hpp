@@ -28,7 +28,7 @@ struct GameEntities
    std::vector<Entity*> getCollisionEntity(){
         std::vector<Entity*> aux;
         for(auto& ent : entities){
-            if(ent->getColision() == true){
+            if(ent->getColision() == true && ent->getBando() == 0){
                 aux.push_back(ent);
             }
         }
