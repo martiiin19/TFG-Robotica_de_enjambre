@@ -10,13 +10,13 @@
 EntityGenerator::EntityGenerator(GameEntities& game,Camera2D& cam) : ents{game},camera{cam} {}
 
 void EntityGenerator::CreateEntity(Vector2 pos = {0.0,0.0},Vector2 vel = {0.0,0.0}, TypeEntity type = TypeEntity::SOLDIER) noexcept{
-    Entity* ent = new Entity(id_iteration,type,pos,pos,vel,{W_SOLDIER,H_SOLDIER});
+    Entity* ent = new Soldier(id_iteration,type,pos,pos,vel,{W_SOLDIER,H_SOLDIER});
     ents.InsertEntity(ent);
     id_iteration++;
 }
 
 void EntityGenerator::CreateStructure(float x, float y) noexcept{
-    Entity* ent = new Entity(id_iteration,TypeEntity::STRUCTURE,{x,y},{x,y},{0,0},{W_SOLDIER,H_SOLDIER});
+    Entity* ent = new Structure(id_iteration,TypeEntity::STRUCTURE,{x,y},{W_SOLDIER,H_SOLDIER});
     ents.InsertEntity(ent);
     id_iteration++;
 }
@@ -25,7 +25,7 @@ void EntityGenerator::CreateEntities(int n) noexcept{
 
     for(int i = 0; i<n; i++){
         Vector2 pos {randomPosition()};
-        Entity* ent = new Entity(id_iteration,TypeEntity::SOLDIER,pos,pos,{0.0,0.0},{W_SOLDIER,H_SOLDIER});
+        Entity* ent = new Soldier(id_iteration,TypeEntity::SOLDIER,pos,pos,{0.0,0.0},{W_SOLDIER,H_SOLDIER});
         ents.InsertEntity(ent);
         id_iteration++;
     }
@@ -35,7 +35,7 @@ void EntityGenerator::CreateEnemigos(int n) noexcept{
 
     for(int i = 0; i<n; i++){
         Vector2 pos {randomPosition()};
-        Entity* ent = new Entity(id_iteration,TypeEntity::SOLDIER,pos,pos,{0.0,0.0},{W_SOLDIER,H_SOLDIER},1);
+        Entity* ent = new Soldier(id_iteration,TypeEntity::SOLDIER,pos,pos,{0.0,0.0},{W_SOLDIER,H_SOLDIER},1);
         ents.InsertEntity(ent);
         id_iteration++;
     }
