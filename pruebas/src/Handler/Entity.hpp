@@ -18,7 +18,7 @@
 
 #include <array>
 
-#define FACTOR_DESTINO 3
+#define FACTOR_DESTINO 2.4
 #define FACTOR_REPULSION 2.2
 #define DISTANCIA_DE_ATAQUE 20
 
@@ -29,9 +29,13 @@ struct Entity
         setDestination(pDEST);
         setRepulsion({0,0});
         if(type == TypeEntity::SOLDIER){
-            att = Attitude::PASIVA;
+            if(bando == 1){
+                att = Attitude::DEFENSIVA;
+            }
+           
             daño = 20;
         }
+       
         for(auto& fuerza : fuerzas){
             fuerza.x = 0;
             fuerza.y = 0;
@@ -102,6 +106,9 @@ struct Entity
                         
                     }
                     break;
+                case 2:
+
+                    break;
             }
         }
        
@@ -145,9 +152,15 @@ struct Entity
         }
     }
 
-    void Atacar(Entity* e){
-        att = Attitude::OFENSIVA;
-        enemigo = e;
+    void Atacar(Entity* e, bool o = false){
+        if(o == false){
+            att = Attitude::OFENSIVA;
+            enemigo = e;
+        }else if(o == true && std::abs(position.x - destination[0].x) < VEL_SOLDIER && std::abs(position.y - destination[0].y) < VEL_SOLDIER){
+            att = Attitude::OFENSIVA;
+            enemigo = e;
+        }
+        
     }
    
     void Update(Camera2D& camera){
@@ -160,10 +173,12 @@ struct Entity
             mover();
             rect.x = position.x-W_SOLDIER/2;
             rect.y = position.y-H_SOLDIER/2;
+            
         }else if(destination[1].x!=0 && destination[1].y!=0){
             DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[1],camera),BLUE);
             setDestination(destination[1]);
         }
+           
         DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[0],camera),RED);
         //std::cout << position.x << "<=>" << position.y << std::endl;
         
@@ -240,13 +255,14 @@ struct Entity
         int id;
         int tipo{0};//si es del jugador o de la maquina si es 0 player
         TypeEntity type;
-        std::array<Vector2,2> destination;
-        std::array<Vector2,2> fuerzas;
+        std::array<Vector2,3> destination;
+        std::array<Vector2,3> fuerzas;
         Vector2 position {0.0, 0.0};  // Probablemente hay que cambiarlo a un vector de la libreria raylib
         bool selected {false};
         bool colision {false};
         Attitude att { Attitude::INDEFINIDA };
         Entity* enemigo{nullptr};
+
         int vida{100};
         int daño;
 

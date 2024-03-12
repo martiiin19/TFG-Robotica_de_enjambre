@@ -30,3 +30,13 @@ void EntityGenerator::CreateEntities(int n) noexcept{
         id_iteration++;
     }
 }
+
+void EntityGenerator::CreateEnemigos(int n) noexcept{
+
+    for(int i = 0; i<n; i++){
+        Vector2 pos {randomPosition()};
+        Entity* ent = new Entity(id_iteration,TypeEntity::SOLDIER,pos,pos,{0.0,0.0},{W_SOLDIER,H_SOLDIER},1);
+        ents.InsertEntity(ent);
+        id_iteration++;
+    }
+}

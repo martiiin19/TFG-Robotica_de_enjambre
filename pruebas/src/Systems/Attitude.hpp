@@ -8,6 +8,9 @@
 
 #include "../Handler/GameEntities.hpp"
 
+#define DISTANCIA_DETECCION_OFENSIVA 100
+#define DISTANCIA_DETECCION_DEFENSIVA 40
+
 
 struct Attitude_System
 {
@@ -19,15 +22,21 @@ struct Attitude_System
     void actitudOfensiva(GameEntities& game,Entity* ent){
         for(auto* e :game.getEntities(TypeEntity::SOLDIER)){
             if(e != ent){
-                if(e->getBando() != ent->getBando() && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < 40 && ent->getEnemigo()==nullptr){
-                    ent->Atacar(e);
+                if(e->getBando() != ent->getBando() && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < DISTANCIA_DETECCION_OFENSIVA && ent->getEnemigo()==nullptr){
+                    ent->Atacar(e,true);
                 }
             }
         }
     }
 
-    void actitudDefensiva(){
-        // si te tiene fijado marcarlo como objetivo
+    void actitudDefensiva(GameEntities& game, Entity* ent){
+        for(auto* e : game.getEntities(TypeEntity::SOLDIER)){
+            if(e != ent){
+                if(e->getBando() != ent->getBando() && e->getEnemigo() == ent && calculateDistanceBetweenPoints(e->getPosition(),ent->getPosition()) < DISTANCIA_DETECCION_DEFENSIVA){
+                    ent->Atacar(e,true);
+                }
+            }
+        }
     }
 
     void Update(GameEntities& game, Player& player,Camera2D& camera){
@@ -38,7 +47,7 @@ struct Attitude_System
                 actitudOfensiva(game,ent);
                 break;
             case Attitude::DEFENSIVA:
-                actitudDefensiva();
+                actitudDefensiva(game, ent);
                 break;
             case Attitude::PASIVA:
                 break;
