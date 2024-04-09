@@ -7,6 +7,7 @@
 #include "Systems/Colisions.hpp"
 #include "Systems/Input.hpp"
 #include "Systems/Attitude.hpp"
+#include "Systems/Animation.hpp"
 
 //Handler
 #include "Handler/GameEntities.hpp"
@@ -39,22 +40,19 @@ int main(){
     //generator.CreateEntity({1000,200},{0,0},TypeEntity::SOLDIER);
     //generator.CreateEntity({-400,300},{0,0},TypeEntity::STRUCTURE);
     //generator.CreateEntity({800,800},{0,0},TypeEntity::STRUCTURE);
-    generator.CreateEntities(10);
-    generator.CreateEnemigos(10);
+    generator.CreateEntities(50);
+    //generator.CreateEnemigos(1);
 
     MapsHandler maps {generator, camera};
 
     maps.addMap("assets/mapas/mapaXML.tmx");
-
-    //for(auto& stc : gameEntities.getEntities(TypeEntity::STRUCTURE)){
-    //    std::cout << stc->getPosition().x << " : " << stc->getPosition().y << std::endl;
-    //}
 
     Render_System render;
     Physics_System physics;
     Input_System input;
     Colisions_System colision;
     Attitude_System attitude;
+    Animation_System animation;
     
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
@@ -68,6 +66,7 @@ int main(){
         physics.Update(gameEntities,camera);
         colision.Update(gameEntities,player,camera);
         attitude.Update(gameEntities,player,camera);
+        animation.Update(gameEntities,camera);
 
         BeginDrawing();
         ClearBackground(BLACK);

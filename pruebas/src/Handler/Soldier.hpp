@@ -2,6 +2,10 @@
 
 #include "Entity.hpp"
 
+#include "HandlerAnimator.hpp"
+
+#include "StatesAnimation.hpp"
+
 struct Soldier : public Entity {
 
     explicit Soldier (int pID,TypeEntity pTYPE = TypeEntity::STRUCTURE, Vector2 pPOS = {0.0, 0.0}, Vector2 pDEST = {0.0, 0.0}, Vector2 pVEL = {0.0, 0.0}, Vector2 pSIZE = {25,25}, int bando = 0) : Entity(pID,pTYPE,pPOS,pSIZE,bando) {
@@ -73,14 +77,54 @@ struct Soldier : public Entity {
                         
                     }
                     break;
-                case 2:
-
-                    break;
             }
+            //if(fuerzas[i].x != 0 && fuerzas[i].y != 0){
+            //    state = StatesAnimation::MOVE;
+            //}
         }
        
     }
 
+    int calcularDireccion() {
+        Vector2 direccion_total = {0.0f, 0.0f};
+
+        // Sumamos todos los vectores de fuerza
+        for (const auto& fuerza : fuerzas) {
+            direccion_total.x += fuerza.x;
+            direccion_total.y += fuerza.y;
+        }
+
+        // Calculamos el ángulo del vector total
+        float angulo = atan2(direccion_total.y, direccion_total.x);
+
+        // Convertimos el ángulo a grados
+        angulo = angulo * 180.0f / M_PI;
+
+        // Ajustamos el ángulo para que esté en el rango [0, 360)
+        if (angulo < 0) {
+            angulo += 360.0f;
+        }
+
+        // Definimos las direcciones principales
+        std::array<int,8> direcciones = {2,1,0,7,6,5,4,3};
+
+        // Calculamos el ángulo más cercano a cada dirección
+        std::array<float,8> angulo_direcciones = {0.0f, 45.0f, 90.0f, 135.0f, 180.0f, 225.0f, 270.0f, 315.0f};
+
+        // Encontramos la dirección más cercana al ángulo calculado
+        int direccion_actual = 0;
+        float min_diferencia = std::abs(angulo - angulo_direcciones[0]);
+        for (int i = 1; i < angulo_direcciones.size(); ++i) {
+            float diferencia = std::abs(angulo - angulo_direcciones[i]);
+            if (diferencia < min_diferencia) {
+                min_diferencia = diferencia;
+                direccion_actual = i;
+            }
+        }
+
+        // Devolvemos la dirección en la que se está dirigiendo la entidad
+        return direcciones[direccion_actual];
+    }
 
     void actualizarAtaque(Camera2D& camera){
         
@@ -130,29 +174,52 @@ struct Soldier : public Entity {
         }
         
     }
+
+    float calculateDistanceBetweenPoints(Vector2 p1,Vector2 p2){
+        return std::sqrt(std::pow(p2.x-p1.x,2) + std::pow(p2.y-p1.y,2));
+    }
    
     void Update(Camera2D& camera) override{
         if(enemigo != nullptr){
             actualizarAtaque(camera);
+            if(calculateDistanceBetweenPoints(getPosition(),enemigo->getPosition()) < 25){
+                
+                //state = StatesAnimation::ATTACK;
+            }
         }
         if(std::abs(getPosition().x - destination[0].x) > VEL_SOLDIER || std::abs(getPosition().y - destination[0].y) > VEL_SOLDIER){
-            
             calcularFuerzas(camera);
             mover();
             setRectangle();
+            if(enemigo == nullptr){
+                state = StatesAnimation::MOVE;
+            }else if(calculateDistanceBetweenPoints(getPosition(),enemigo->getPosition()) > 25){
+                state = StatesAnimation::MOVE;
+            }
             
         }else if(destination[1].x!=0 && destination[1].y!=0){
             DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[1],camera),BLUE);
-            setDestination(destination[1]);
+            setDestination(destination[1]); 
         }
-           
+        if(enemigo == nullptr && std::abs(getPosition().x - destination[0].x) < VEL_SOLDIER && std::abs(getPosition().y - destination[0].y) < VEL_SOLDIER && destination[1].x==0 && destination[1].y==0){
+            state = StatesAnimation::STAY;
+        } 
+        
         DrawLineV(GetWorldToScreen2D(getPosition(),camera),GetWorldToScreen2D(destination[0],camera),RED);
         //std::cout << position.x << "<=>" << position.y << std::endl;
         
     }
 
-   
+    void UpdateAnimation(){
+        int direccion = calcularDireccion();
+        std::cout << direccion << std::endl;
+        animation.Update(state,direccion);
+    }
 
+    void drawEntity() override{
+        animation.Draw(getPosition());
+        //getSprite().drawSprite(getPosition());
+    }
 
     Attitude getAttitude(){
         return att;
@@ -182,9 +249,12 @@ struct Soldier : public Entity {
 
 
     private:
-        std::array<Vector2,3> destination;
-        std::array<Vector2,3> fuerzas;
+        std::array<Vector2,2> destination;
+        std::array<Vector2,2> fuerzas;
         bool selected {false};
+
+        HandlerAnimator animation {};
+        StatesAnimation state {StatesAnimation::MOVE}; 
        
         Attitude att { Attitude::INDEFINIDA };
         Entity* enemigo{nullptr};

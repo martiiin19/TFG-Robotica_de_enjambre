@@ -22,6 +22,8 @@
 #define FACTOR_REPULSION 2.2
 #define DISTANCIA_DE_ATAQUE 20
 
+
+
 struct Entity
 {
     explicit Entity(int pID, TypeEntity pTYPE = TypeEntity::SOLDIER, Vector2 pPOS = {0.0, 0.0},Vector2 pSIZE = {25,25}, int bando = 0) : 
@@ -32,6 +34,7 @@ struct Entity
     }
 
     virtual void Update(Camera2D& camera) = 0;
+    virtual void drawEntity() = 0;
 
     int getID(){
         return id;
@@ -42,7 +45,7 @@ struct Entity
         return position;
     }
 
-    void setPosition(std::array<Vector2,3>& fuerzas){
+    void setPosition(std::array<Vector2,2>& fuerzas){
         position.x += fuerzas[0].x + fuerzas[1].x;
         position.y += fuerzas[0].y + fuerzas[1].y;
     }
@@ -52,16 +55,7 @@ struct Entity
         rect.y = position.y-H_SOLDIER/2;
     }
 
-    void drawEntity(){
-        DrawRectangleRec(rect,color);
-        
-        if(type == TypeEntity::STRUCTURE){
-            DrawPixelV(position,WHITE);
-            DrawCircleLines(position.x,position.y,70,GREEN);
-        }else{
-            spr.drawSprite(position);
-        }
-    }
+   
 
     bool UpdateCollision(Vector2 mouse){
         colision = false;
@@ -93,6 +87,10 @@ struct Entity
 
     int getBando(){
         return tipo;
+    }
+
+    Sprite getSprite(){
+        return spr;
     }
    
     private:

@@ -75,6 +75,10 @@ struct Input_System
             player.cambiarFormacion(Formaciones::TRIANGULO);
         }
 
+        if(IsKeyPressed(KEY_R)){
+            player.cambiarFormacion(Formaciones::LINEA);
+        }
+
         if(IsKeyPressed(KEY_A)){
             player.cambiarActitud(Attitude::OFENSIVA);
         }

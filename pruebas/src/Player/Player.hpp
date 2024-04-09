@@ -35,6 +35,8 @@ struct Player
 
     void moveAndFormation(Vector2 coords) noexcept;
 
+    float angleOfFormation() noexcept;
+
     Mouse& getMouse(){
         return mouse;
     }
@@ -52,13 +54,13 @@ struct Player
         void ESTANDAR(Vector2 coord) noexcept;
         void CIRCULO(Vector2 coord) noexcept;
         void TRIANGULO(Vector2 coord) noexcept;
+        void LINEA(Vector2 coord) noexcept;
 
     private:
         std::array<Entity*,20> arraySeleccion;
         Mouse mouse;
         Formaciones formation{Formaciones::ESTANDAR};
         Vector2 positionFormation;
-        
-        
+        Vector2 positionFormationAux;
         
 };
