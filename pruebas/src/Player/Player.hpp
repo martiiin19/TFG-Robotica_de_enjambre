@@ -15,7 +15,7 @@
 
 struct Player
 {
-    explicit Player();
+    explicit Player(Camera2D& camera);
 
     void selectEntities(std::vector<Entity*> selecteds) noexcept;
 
@@ -35,7 +35,6 @@ struct Player
 
     void moveAndFormation(Vector2 coords) noexcept;
 
-    float angleOfFormation() noexcept;
 
     Mouse& getMouse(){
         return mouse;
@@ -48,6 +47,11 @@ struct Player
     bool isDrawing { false };
     Rectangle rectSelection {0,0,0,0};
     Vector2 startPos {0, 0};
+    float angleOfFormation {0};
+    float angleOfFormationAux{0};
+    bool inFormation {false};
+    Vector2 positionFormation;
+    Vector2 positionFormationAux;
 
     protected:
         //Functions
@@ -60,7 +64,5 @@ struct Player
         std::array<Entity*,20> arraySeleccion;
         Mouse mouse;
         Formaciones formation{Formaciones::ESTANDAR};
-        Vector2 positionFormation;
-        Vector2 positionFormationAux;
-        
+        Camera2D& cam;
 };

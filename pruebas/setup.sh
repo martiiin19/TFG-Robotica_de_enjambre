@@ -20,6 +20,7 @@ rm ficheros
 
 mv mapas                    assets/mapas
 mv animaciones              assets/animaciones
+mv interfaz                 assets/interfaz
 
 
 # LIBRERIAS

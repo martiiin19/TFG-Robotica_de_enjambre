@@ -15,7 +15,7 @@ struct AnimationSequence : public Animation
         if (frameCounter >= frameSpeed) {
             frameCounter = 0;
             currentFrame++;
-            if (currentFrame >= 5) // 8 filas * 4 columnas = 32 sprites
+            if (currentFrame > frames) // 8 filas * 4 columnas = 32 sprites
                 currentFrame = 0;
         }
     }

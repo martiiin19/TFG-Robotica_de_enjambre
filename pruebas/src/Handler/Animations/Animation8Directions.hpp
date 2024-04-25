@@ -18,7 +18,7 @@ struct Animation8Directions : public Animation
         if (frameCounter >= frameSpeed) {
             frameCounter = 0;
             currentFrame++;
-            if (currentFrame >= 4) // 8 filas * 4 columnas = 32 sprites
+            if (currentFrame > 4) // 8 filas * 4 columnas = 32 sprites
                 currentFrame = 0;
         }
     }

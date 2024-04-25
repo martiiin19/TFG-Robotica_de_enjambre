@@ -8,11 +8,15 @@ struct Structure : public Entity
 
     }
 
+    ~Structure() override{
+
+    }
+
     void Update(Camera2D& camera) override{
 
     }
 
-     void drawEntity() override{
+    void drawEntity() override{
         DrawRectangleRec(getRectangle(),WHITE);
         DrawPixelV(getPosition(),WHITE);
         DrawCircleLines(getPosition().x,getPosition().y,70,GREEN);
