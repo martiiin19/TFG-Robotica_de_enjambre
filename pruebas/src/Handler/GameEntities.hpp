@@ -44,7 +44,7 @@ struct GameEntities
     }
 
     void DeleteEntity(Entity* ent){
-       unsigned int cont = 0;
+        unsigned int cont = 0;
         int aux = -1;
         for(auto* e : entities){
             if(e->getID() == ent->getID()){

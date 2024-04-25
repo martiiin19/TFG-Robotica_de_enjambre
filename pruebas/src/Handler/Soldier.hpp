@@ -15,12 +15,15 @@ struct Soldier : public Entity {
             att = Attitude::DEFENSIVA;
         }
         
-        daño = 20;
 
         for(auto& fuerza : fuerzas){
             fuerza.x = 0;
             fuerza.y = 0;
         }
+    }
+
+    ~Soldier() override{
+
     }
 
     Vector2& getVelocity(){
@@ -183,17 +186,27 @@ struct Soldier : public Entity {
         if(enemigo != nullptr){
             actualizarAtaque(camera);
             if(calculateDistanceBetweenPoints(getPosition(),enemigo->getPosition()) < 25){
-                
-                //state = StatesAnimation::ATTACK;
+                state = StatesAnimation::ATTACK;
+                if(animation.getCurrentFrame() == 4 && animation.getState() == StatesAnimation::ATTACK && attack == false){
+                    enemigo->vida = enemigo->vida - daño;
+                    attack = true;
+                    if(enemigo->vida < 0){
+                        enemigo = nullptr;
+                    }
+                }else if(attack == true && animation.getCurrentFrame() != 4 && animation.getState() == StatesAnimation::ATTACK){
+                    attack = false;
+                }
             }
         }
         if(std::abs(getPosition().x - destination[0].x) > VEL_SOLDIER || std::abs(getPosition().y - destination[0].y) > VEL_SOLDIER){
             calcularFuerzas(camera);
-            mover();
-            setRectangle();
             if(enemigo == nullptr){
+                mover();
+                setRectangle();
                 state = StatesAnimation::MOVE;
             }else if(calculateDistanceBetweenPoints(getPosition(),enemigo->getPosition()) > 25){
+                mover();
+                setRectangle();
                 state = StatesAnimation::MOVE;
             }
             
@@ -212,7 +225,8 @@ struct Soldier : public Entity {
 
     void UpdateAnimation(){
         int direccion = calcularDireccion();
-        std::cout << direccion << std::endl;
+        
+        //std::cout << direccion << std::endl;
         animation.Update(state,direccion);
     }
 
@@ -252,13 +266,11 @@ struct Soldier : public Entity {
         std::array<Vector2,2> destination;
         std::array<Vector2,2> fuerzas;
         bool selected {false};
+        bool attack {false};
 
         HandlerAnimator animation {};
         StatesAnimation state {StatesAnimation::MOVE}; 
        
         Attitude att { Attitude::INDEFINIDA };
         Entity* enemigo{nullptr};
-
-        int vida{100};
-        int daño;
 };

@@ -21,12 +21,25 @@ struct Input_System
 
         lastGesture = currentGesture;
         currentGesture = GetGestureDetected();
+        if(player.inFormation == true){
+            float arrowLength = 50;
+            Vector2 endP;
+            endP.x = player.positionFormation.x + arrowLength * cos(player.angleOfFormationAux * DEG2RAD);
+            endP.y = player.positionFormation.y + arrowLength * sin(player.angleOfFormationAux * DEG2RAD);
+
+            DrawLineV(GetWorldToScreen2D({player.positionFormation.x,player.positionFormation.y},camera), GetWorldToScreen2D(endP,camera), YELLOW);
+
+            // Dibujar partes de la flecha que forman la punta
+            //DrawTriangle({endX, endY}, {endX - 10 * cos((player.angleOfFormation + 135) * DEG2RAD), endY - 10 * sin((player.angleOfFormation + 135) * DEG2RAD)}, {endX - 10 * cos((player.angleOfFormation - 135) * DEG2RAD), endY - 10 * sin((player.angleOfFormation - 135) * DEG2RAD)}, WHITE);
+        }
+
         // Seleccionar una entidad
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
             if(!entities.getCollisionEntity().empty()){
                 player.selectEntities(entities.getCollisionEntity());
             }else{
                 player.deseleccionarEntidades();
+                player.inFormation = false;
             }
         }
         // Cambiar el destino de la entidad
@@ -89,6 +102,25 @@ struct Input_System
 
         if(IsKeyPressed(KEY_D)){
             player.cambiarActitud(Attitude::PASIVA);
+        }
+
+        if(IsKeyDown(KEY_Z)){
+            if(player.angleOfFormationAux == 0){
+                player.angleOfFormationAux = 360;
+            }
+            player.angleOfFormationAux -= 0.5f;
+        }
+
+        if(IsKeyDown(KEY_X)){
+            if(player.angleOfFormationAux == 360){
+                player.angleOfFormationAux = 0;
+            }
+            player.angleOfFormationAux += 0.5f;
+        }
+
+        if(IsKeyPressed(KEY_C)){
+            player.angleOfFormation = player.angleOfFormationAux;
+            player.hacerFormacion();
         }
 
         // esto es para movernos de momento con la camara se cambiara en un futuro 

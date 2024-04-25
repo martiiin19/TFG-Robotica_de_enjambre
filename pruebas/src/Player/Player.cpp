@@ -1,17 +1,7 @@
 #include "Player.hpp"
 
 
-//for(auto* ent : arraySeleccion){ //Funcion de rotacion de la formacion 
-//    if(ent != nullptr){
-//        float relX = ent->getPosition().x - positionFormationAux.x;
-//        float relY = ent->getPosition().y - positionFormationAux.y;
-
-//        static_cast<Soldier*>(ent)->setDestination({positionFormationAux.x + relX * cos - relY * sin, positionFormationAux.y + relX * sin + relY * cos});
-//    }
-//   
-//}
-
-Player::Player() {
+Player::Player(Camera2D& camera) : cam{camera} {
     for(unsigned int i = 0; i<arraySeleccion.size(); i++){
         arraySeleccion[i] = nullptr;
     }
@@ -77,10 +67,6 @@ void Player::moveAndFormation(Vector2 coords) noexcept{
     hacerFormacion();
 }
 
-float Player::angleOfFormation() noexcept{
-    return atan2(positionFormation.x - positionFormationAux.x,positionFormation.y - positionFormationAux.y);
-}
-
 void Player::cambiarActitud(Attitude att) noexcept{
     for(auto* ent : arraySeleccion){
         if(ent != nullptr){
@@ -94,6 +80,7 @@ void Player::cambiarFormacion(Formaciones form) noexcept{
     formation = form;
     hacerFormacion();
 }
+
 
 void Player::hacerFormacion() noexcept{
     
@@ -120,14 +107,9 @@ void Player::hacerFormacion() noexcept{
 void Player::ESTANDAR(Vector2 coord) noexcept{
     int numeroEntidades = anyEntitySelected();
 
-    float angle = angleOfFormation();
 
-    if (angle < 0) {
-        angle += 2 * M_PI;
-    }
-
-    float cos = std::cos(angle);
-    float sin = std::sin(angle);
+    float cos = std::cos(angleOfFormation);
+    float sin = std::sin(angleOfFormation);
 
     int num_filas = 4;
     int num_columnas = 5;
@@ -152,6 +134,7 @@ void Player::ESTANDAR(Vector2 coord) noexcept{
         }
     }
 
+    inFormation = true;
 }
 
 void Player::CIRCULO(Vector2 coord) noexcept{
@@ -166,21 +149,22 @@ void Player::CIRCULO(Vector2 coord) noexcept{
         dest.y = coord.y + radius * sin(angle);
         static_cast<Soldier*>(arraySeleccion[i])->setDestination(dest);
     }
+
+    inFormation = true;
 }
 
 void Player::TRIANGULO(Vector2 coord) noexcept{
     int numeroEntidades = anyEntitySelected();
 
-    float angle = atan2(positionFormation.x - (positionFormationAux.x-15),positionFormation.y - (positionFormationAux.y-15));
 
-    if (angle < 0) {
-        angle += 2 * M_PI;
-    }
-
-    float cos = std::cos(angle);
-    float sin = std::sin(angle);
+    float cos = std::cos(angleOfFormation);
+    float sin = std::sin(angleOfFormation);
 
     int numFilas = 6;
+
+    Vector2 center;
+    center.x = positionFormation.x + 8;
+    center.y = positionFormation.y + 75;
 
     int prog = 0;
     int ent = 0;
@@ -189,8 +173,8 @@ void Player::TRIANGULO(Vector2 coord) noexcept{
         for(int j = 0; j<prog;j++){
             float x = coord.x+j*(W_SOLDIER) -i*12;
             float y = coord.y +i*(H_SOLDIER);
-            float relX = x - positionFormation.x;
-            float relY = y - positionFormation.y;
+            float relX = x - center.x;
+            float relY = y - center.y;
             //std::cout << dest.x << " : " << dest.y << std::endl;
             if(ent < numeroEntidades){
                 float rotated_relX = relX * cos - relY * sin;
@@ -202,25 +186,23 @@ void Player::TRIANGULO(Vector2 coord) noexcept{
         
     }
 
+
+
+    inFormation = true;
 }
 
 void Player::LINEA(Vector2 coord) noexcept{
     int numeroEntidades = anyEntitySelected();
 
-    float angle = angleOfFormation();
-    
-    if (angle < 0) {
-        angle += 2 * M_PI;
-    }
 
-    float cos = std::cos(angle);
-    float sin = std::sin(angle);
+    float cos = std::cos(angleOfFormation);
+    float sin = std::sin(angleOfFormation);
 
     int num_filas = 10;
     int num_columnas = 2;
 
-    float h_rect = 2* H_SOLDIER;
-    float w_rect = 3* W_SOLDIER;
+    float h_rect = 5* H_SOLDIER;
+    float w_rect = W_SOLDIER;
 
     int i = 0;
     for (int fila = 0; fila < num_filas; fila++) {
@@ -238,4 +220,6 @@ void Player::LINEA(Vector2 coord) noexcept{
      
         }
     }
+
+    inFormation = true;
 }

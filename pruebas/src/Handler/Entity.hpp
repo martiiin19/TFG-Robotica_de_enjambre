@@ -26,8 +26,8 @@
 
 struct Entity
 {
-    explicit Entity(int pID, TypeEntity pTYPE = TypeEntity::SOLDIER, Vector2 pPOS = {0.0, 0.0},Vector2 pSIZE = {25,25}, int bando = 0) : 
-    id(pID), type(pTYPE), position(pPOS),tipo(bando) {
+    explicit Entity(int pID, TypeEntity pTYPE = TypeEntity::SOLDIER, Vector2 pPOS = {0.0, 0.0},Vector2 pSIZE = {25,25}, int bando = 0,int v = 100,int d = 25) : 
+    id(pID), type(pTYPE), position(pPOS),tipo(bando),vida(v),daño(d) {
          
         
         rect = {position.x-W_SOLDIER/2, position.y-H_SOLDIER/2, pSIZE.x, pSIZE.y};
@@ -35,6 +35,7 @@ struct Entity
 
     virtual void Update(Camera2D& camera) = 0;
     virtual void drawEntity() = 0;
+    virtual ~Entity() = default;
 
     int getID(){
         return id;
@@ -93,6 +94,10 @@ struct Entity
         return spr;
     }
    
+    int vida{100};
+    int daño;
+    bool markForDie{false};
+
     private:
         int id;
         int tipo{0};//si es del jugador o de la maquina si es 0 player
@@ -100,6 +105,7 @@ struct Entity
         Vector2 position {0.0, 0.0};
         bool colision {false};
         Sprite spr {};
+        
 
         // Antes de poner Sprite
         Rectangle rect {0,0,0,0};
