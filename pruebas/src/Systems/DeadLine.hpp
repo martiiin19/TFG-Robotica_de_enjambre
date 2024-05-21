@@ -12,7 +12,7 @@ struct DeadLine_System
         unsigned int cont = 0;
         int aux = -1;  
         for(auto& ent : game.getAllEntities()){
-            if(ent->vida < 0){
+            if(ent->vida <= 0){
                 ent->~Entity();
                 aux = cont; 
             }

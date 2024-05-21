@@ -7,6 +7,7 @@
 #include "../Player/Player.hpp"
 
 #include "../Handler/GameEntities.hpp"
+#include "../Handler/EntityGenerator.hpp"
 
 #include <iostream>
 
@@ -15,10 +16,10 @@
 struct Input_System
 {
 
-    void Update(GameEntities& entities, Player& player, Camera2D& camera){
+    void Update(GameEntities& entities, Player& player, Camera2D& camera, EntityGenerator& gen){
         player.getMouse().Update();
         //std::cout << "X: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).x << " Y: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).y << std::endl;
-
+        std::cout << "X: " << player.getMouse().getCoord().x << " Y: " << player.getMouse().getCoord().y << std::endl;
         lastGesture = currentGesture;
         currentGesture = GetGestureDetected();
         if(player.inFormation == true){
@@ -108,19 +109,27 @@ struct Input_System
             if(player.angleOfFormationAux == 0){
                 player.angleOfFormationAux = 360;
             }
-            player.angleOfFormationAux -= 0.5f;
+            player.angleOfFormationAux -= 0.1f;
         }
 
         if(IsKeyDown(KEY_X)){
             if(player.angleOfFormationAux == 360){
                 player.angleOfFormationAux = 0;
             }
-            player.angleOfFormationAux += 0.5f;
+            player.angleOfFormationAux += 0.1f;
         }
 
         if(IsKeyPressed(KEY_C)){
             player.angleOfFormation = player.angleOfFormationAux;
             player.hacerFormacion();
+        }
+
+        if(IsKeyPressed(KEY_U)){
+            gen.CreateFormacionEnemigos(25,1805,0,Formaciones::ESTANDAR,0);
+        }
+
+        if(IsKeyPressed(KEY_J)){
+            player.killEntities();
         }
 
         // esto es para movernos de momento con la camara se cambiara en un futuro 
@@ -134,6 +143,19 @@ struct Input_System
             camera.target.y += 10.0f;
         }
         if (IsKeyDown(KEY_UP)) {
+            camera.target.y -= 10.0f;
+        }
+
+        if (player.getMouse().getCoord().x > 1900 ) {
+            camera.target.x += 10.0f;
+        }
+        if (player.getMouse().getCoord().x < 20) {
+            camera.target.x -= 10.0f;
+        } 
+        if (player.getMouse().getCoord().y > 970) {
+            camera.target.y += 10.0f;
+        }
+        if (player.getMouse().getCoord().y < 10) {
             camera.target.y -= 10.0f;
         }
         //std::cout << camera.target.x << " : " << camera.target.y << std::endl; 

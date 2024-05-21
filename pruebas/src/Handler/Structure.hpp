@@ -8,10 +8,7 @@ struct Structure : public Entity
 
     }
 
-    ~Structure() override{
-
-    }
-
+   
     void Update(Camera2D& camera) override{
 
     }

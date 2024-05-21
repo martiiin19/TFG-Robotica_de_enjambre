@@ -24,7 +24,7 @@ struct Animation8Directions : public Animation
     }
 
     void Draw(Vector2 position) override{
-        Rectangle sourceRec = {  (float)currentFrame * getTexture().width / 4 + 10, (float)direccion * getTexture().height / 8 + 10, (float)getTexture().width / 4, (float)getTexture().height / 8  };
+        Rectangle sourceRec = {  (float)currentFrame * getTexture().width / 4 + 5, (float)direccion * getTexture().height / 8 + 5, (float)getTexture().width / 4, (float)getTexture().height / 8  };
         //Rectangle destRec = { position.x, position.y, (float)getTexture().width / 4, (float)getTexture().height / 8 };
         position.x = position.x -sourceRec.width/4;
         position.y = position.y -sourceRec.height/4;
