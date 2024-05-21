@@ -35,7 +35,7 @@ struct Entity
 
     virtual void Update(Camera2D& camera) = 0;
     virtual void drawEntity() = 0;
-    virtual ~Entity() = default;
+    //virtual ~Entity() = default;
 
     int getID(){
         return id;

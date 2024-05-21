@@ -30,6 +30,16 @@ void Player::deseleccionarEntidades() noexcept{
     }
 }
 
+void Player::killEntities() noexcept{
+    for(unsigned int i = 0; i<arraySeleccion.size(); i++){
+        if(arraySeleccion[i] != nullptr){
+            static_cast<Soldier*>(arraySeleccion[i])->vida = 0;
+            arraySeleccion[i] = nullptr;
+        }
+        
+    }
+}
+
 int Player::anyEntitySelected() noexcept{
     int aux = 0;
     for (auto* elemento : arraySeleccion) {

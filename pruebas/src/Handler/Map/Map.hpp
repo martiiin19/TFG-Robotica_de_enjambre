@@ -8,6 +8,7 @@
 #include <vector>
 #include "../Textura.hpp"
 #include "../EntityGenerator.hpp"
+#include "../../Player/Formaciones.hpp"
 
 using namespace tinyxml2;
 
@@ -48,10 +49,15 @@ struct Map
         XMLElement* aux {};
         int centinela = -1;
         for(XMLElement* child = map->FirstChildElement("tileset"); child != nullptr && centinela == -1; child = child->NextSiblingElement("tileset")){
-            if(id < std::stoi(child->Attribute("firstgid"))){
-                aux = child->PreviousSiblingElement("tileset");
-                centinela = 0;
-            }
+                
+                aux = child;
+                if(id < std::stoi(child->Attribute("firstgid"))){
+                    
+                    aux = child->PreviousSiblingElement("tileset");
+                    centinela = 0;
+                    
+                }
+            
         }
         return aux;
     }
@@ -75,15 +81,16 @@ struct Map
             for(XMLElement* tile = data->FirstChildElement("tile"); tile != nullptr; tile = tile->NextSiblingElement("tile")){
                 if(tile->Attribute("gid")){
                     int id = std::stoi(tile->Attribute("gid"));
-                    int firstid = std::stoi(getTilesetXMLElement(id)->Attribute("firstgid"));
+                    int firstgid = std::stoi(getTilesetXMLElement(id)->Attribute("firstgid"));
                     
-                    Tile* nuevo = new Tile(id,*getTilesetXMLElement(id),textureComparer(getTilesetXMLElement(id)->FirstChildElement("image")->Attribute("source"),texts),firstid);//se crea el tile pero tengo que saber que tileset pasarle
+                    Tile* nuevo = new Tile(id,*getTilesetXMLElement(id),textureComparer(getTilesetXMLElement(id)->FirstChildElement("image")->Attribute("source"),texts),firstgid);//se crea el tile pero tengo que saber que tileset pasarle
                     tiles.emplace_back(nuevo);
+                        
                 }
-                   
             }
+            
         }
-        //std::cout << i << std::endl;
+        
         putObjects(cam,gen);
     }
     
@@ -118,12 +125,26 @@ struct Map
             gen.CreateStructure(m_X,m_Y);
         }
     }
+    void createEnemies(XMLElement* objectgroup,EntityGenerator& gen,Camera2D& cam){
+        for(XMLElement* object = objectgroup->FirstChildElement("object");object!=nullptr;object = object->NextSiblingElement("object")){
+            float m_X = (std::stof(object->Attribute("x")) - std::stof(object->Attribute("y")));
+            float m_Y = (std::stof(object->Attribute("x")) + std::stof(object->Attribute("y")));
+            std::cout << "Posicion " << m_X << " : " << m_Y << std::endl;
+            float rotacion = std::stof(object->FirstChildElement("properties")->FirstChildElement("property")->Attribute("value"));
+             
+            gen.CreateFormacionEnemigos(m_X,m_Y,rotacion,Formaciones::ESTANDAR,1);
+            //create de formacion de enemigos
+        }
+    }
 
     void putObjects(Camera2D& cam,EntityGenerator& gen){ // a esto se le pasa el generador
         for(XMLElement* child = map->FirstChildElement("objectgroup"); child!=nullptr; child = child->NextSiblingElement("objectgroup")){
             std::string name = child->Attribute("name");
             if(name =="Structuras"){
                 createStructures(child,gen,cam);
+            }
+            if(name == "Enemigos"){
+                //createEnemies(child,gen,cam);
             }
         }
     }

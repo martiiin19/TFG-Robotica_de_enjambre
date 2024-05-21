@@ -35,6 +35,8 @@ struct Player
 
     void moveAndFormation(Vector2 coords) noexcept;
 
+    void killEntities() noexcept;
+
 
     Mouse& getMouse(){
         return mouse;

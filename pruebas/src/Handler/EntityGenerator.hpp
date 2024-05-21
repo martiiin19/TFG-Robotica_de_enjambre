@@ -8,14 +8,16 @@
 
 #include <vector>
 
+
 #include "Soldier.hpp"
 #include "Structure.hpp"
+#include "../Player/Formaciones.hpp"
 
 struct EntityGenerator
 {
     explicit EntityGenerator(GameEntities&,Camera2D&);
 
-    void CreateEntity(Vector2 pos,Vector2 vel,TypeEntity type) noexcept;
+    void CreateEntity(Vector2 pos,Vector2 vel,TypeEntity type, int bando) noexcept;
 
     void CreateEntities(int n) noexcept;
 
@@ -23,9 +25,17 @@ struct EntityGenerator
 
     void CreateStructure(float x, float y) noexcept;
 
+    void CreateFormacionEnemigos(float x, float y, float rotacion, Formaciones form, int bando) noexcept;
+
     protected:
         //Functions
         Vector2 randomPosition() noexcept;
+
+        //Formaciones
+        void ESTANDAR(Vector2 coord,float rotacion, int bando) noexcept;
+        void CIRCULO(Vector2 coord,float rotacion, int bando) noexcept;
+        void TRIANGULO(Vector2 coord,float rotacion, int bando) noexcept;
+        void LINEA(Vector2 coord,float rotacion, int bando) noexcept;
 
         //Variables
         int id_iteration{0};

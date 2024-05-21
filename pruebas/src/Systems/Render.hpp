@@ -16,14 +16,21 @@
 struct Render_System
 {
     
-    void Update(GameEntities& game, Player& player){
+    void Update(GameEntities& game, Player& player, int version = 0){
         //ClearBackground(BLACK);
         
         if(player.isDrawing){
-            DrawRectangleRec(player.rectSelection,WHITE);
+            DrawRectangleRec(player.rectSelection,Fade(WHITE,0.5f));
         }
+        
         for(auto& ent : game.getAllEntities()){
-            ent->drawEntity();
+            if(version == 0){
+                ent->drawEntity();
+            }else{
+                
+                DrawRectangleV(ent->getPosition(),{60,60},RED);
+            }
+            
 
         }
     }

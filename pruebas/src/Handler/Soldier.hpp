@@ -22,9 +22,6 @@ struct Soldier : public Entity {
         }
     }
 
-    ~Soldier() override{
-
-    }
 
     Vector2& getVelocity(){
         return fuerzas[0];
