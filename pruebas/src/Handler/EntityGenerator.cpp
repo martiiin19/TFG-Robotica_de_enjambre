@@ -3,17 +3,32 @@
 
 //Functions{
     Vector2 EntityGenerator::randomPosition() noexcept{
-        Vector2 aux = {static_cast<float>(std::rand() % 1500 + 200), static_cast<float>(std::rand() % 700 + 100)};
+        
+        Vector2 aux = {static_cast<float>(-200 + std::rand() % (200+200)+1), static_cast<float>( 2500 + std::rand() % (2700-2500)+1 )};
         return aux;
     }
 //}
 
 EntityGenerator::EntityGenerator(GameEntities& game,Camera2D& cam) : ents{game},camera{cam} {}
 
-void EntityGenerator::CreateEntity(Vector2 pos = {0.0,0.0},Vector2 vel = {0.0,0.0}, TypeEntity type = TypeEntity::SOLDIER, int bando = 0 ) noexcept{
+void EntityGenerator::CreateEntity(Vector2 pos = {0.0,0.0},Vector2 vel = {0.0,0.0}, TypeEntity type = TypeEntity::SOLDIER, int bando = 0, Attitude att = Attitude::OFENSIVA) noexcept{
     Entity* ent = new Soldier(id_iteration,type,pos,pos,vel,{W_SOLDIER,H_SOLDIER},bando);
     if(bando != 0){
-        static_cast<Soldier*>(ent)->setAttitude(Attitude::OFENSIVA);
+        switch (att)
+        {
+        case Attitude::DEFENSIVA :
+            static_cast<Soldier*>(ent)->setAttitude(Attitude::DEFENSIVA);
+            break;
+        case Attitude::OFENSIVA :
+            static_cast<Soldier*>(ent)->setAttitude(Attitude::OFENSIVA);
+            break;
+        case Attitude::PASIVA :
+            static_cast<Soldier*>(ent)->setAttitude(Attitude::PASIVA);
+            break;
+        default:
+            break;
+        }
+       
     }
     ents.InsertEntity(ent);
     id_iteration++;

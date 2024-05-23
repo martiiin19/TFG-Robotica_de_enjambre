@@ -40,13 +40,19 @@ int main(){
 
     EntityGenerator generator{gameEntities,camera};
     //Unidad de reconocimiento
-    generator.CreateFormacionEnemigos(29, 2620,0,Formaciones::ESTANDAR,0);
+    generator.CreateEntities(20);
+    
     //Enemigos
     generator.CreateFormacionEnemigos(30, 1540,0,Formaciones::ESTANDAR,1);
     generator.CreateFormacionEnemigos(800, 1200,0,Formaciones::TRIANGULO,1);
     generator.CreateFormacionEnemigos(-767, 1200,0,Formaciones::LINEA,1);
     generator.CreateFormacionEnemigos(30, 290,0,Formaciones::CIRCULO,1);
-    //generator.CreateEntity({1000,200},{0,0},TypeEntity::SOLDIER);
+    generator.CreateEntity({500,2610},{0,0},TypeEntity::SOLDIER,1,Attitude::DEFENSIVA);
+    generator.CreateEntity({400,2610},{0,0},TypeEntity::SOLDIER,0,Attitude::PASIVA);
+    generator.CreateEntity({-500,2610},{0,0},TypeEntity::SOLDIER,1,Attitude::PASIVA);
+    generator.CreateEntity({-400,2610},{0,0},TypeEntity::SOLDIER,0,Attitude::PASIVA);
+    generator.CreateEntity({30,3000},{0,0},TypeEntity::SOLDIER,1,Attitude::OFENSIVA);
+    generator.CreateEntity({30,2900},{0,0},TypeEntity::SOLDIER,0,Attitude::PASIVA);
     //generator.CreateEntity({-400,300},{0,0},TypeEntity::STRUCTURE);
     //generator.CreateEntity({800,800},{0,0},TypeEntity::STRUCTURE);
     //generator.CreateEntities(20);

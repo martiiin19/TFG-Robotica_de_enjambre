@@ -17,7 +17,7 @@ struct EntityGenerator
 {
     explicit EntityGenerator(GameEntities&,Camera2D&);
 
-    void CreateEntity(Vector2 pos,Vector2 vel,TypeEntity type, int bando) noexcept;
+    void CreateEntity(Vector2 pos,Vector2 vel,TypeEntity type, int bando,Attitude att) noexcept;
 
     void CreateEntities(int n) noexcept;
 

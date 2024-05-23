@@ -18,8 +18,8 @@ struct Input_System
 
     void Update(GameEntities& entities, Player& player, Camera2D& camera, EntityGenerator& gen){
         player.getMouse().Update();
-        //std::cout << "X: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).x << " Y: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).y << std::endl;
-        std::cout << "X: " << player.getMouse().getCoord().x << " Y: " << player.getMouse().getCoord().y << std::endl;
+        std::cout << "X: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).x << " Y: " << GetScreenToWorld2D(player.getMouse().getCoord(),camera).y << std::endl;
+        //std::cout << "X: " << player.getMouse().getCoord().x << " Y: " << player.getMouse().getCoord().y << std::endl;
         lastGesture = currentGesture;
         currentGesture = GetGestureDetected();
         if(player.inFormation == true){
