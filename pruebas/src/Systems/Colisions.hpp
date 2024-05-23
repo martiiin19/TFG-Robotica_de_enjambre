@@ -8,7 +8,7 @@
 
 #include "../Handler/GameEntities.hpp"
 
-#define RADIUS 70
+#define RADIUS 140
 
 struct Colisions_System
 {

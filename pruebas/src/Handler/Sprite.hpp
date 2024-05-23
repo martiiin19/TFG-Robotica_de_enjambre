@@ -5,14 +5,13 @@
 struct Sprite
 {
     explicit Sprite(){
-        tex = LoadTexture("assets/animaciones/Characters/Civilian1_Idle.png");
-        source = { 15.0f, 15.0f, (float)tex.width/4, (float)tex.height/2 };
+        tex = LoadTexture("assets/animaciones/barracon.png");
     }
 
     void drawSprite(Vector2 vec){
-        vec.x = vec.x -source.width/4;
-        vec.y = vec.y -source.height/4;
-        DrawTextureRec(tex,source,vec,WHITE);
+        vec.x = vec.x -328/2;
+        vec.y = vec.y -273/2 -15;
+        DrawTexture(tex,vec.x,vec.y,WHITE);
     }
 
     Rectangle& getSprite(){

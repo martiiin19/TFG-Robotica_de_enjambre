@@ -14,9 +14,9 @@ struct Structure : public Entity
     }
 
     void drawEntity() override{
-        DrawRectangleRec(getRectangle(),WHITE);
-        DrawPixelV(getPosition(),WHITE);
-        DrawCircleLines(getPosition().x,getPosition().y,70,GREEN);
+        //DrawRectangleRec(getRectangle(),WHITE);
+        //DrawPixelV(getPosition(),WHITE);
+        //DrawCircleLines(getPosition().x,getPosition().y,140,GREEN);
         getSprite().drawSprite(getPosition());
     }
 
